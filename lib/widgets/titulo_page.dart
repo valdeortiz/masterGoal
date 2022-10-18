@@ -24,7 +24,8 @@ class TituloPage extends StatelessWidget {
             child: Text(
               tituloSubrayado,
               style: const TextStyle(
-                color: Colors.brown,
+                // color: Colors.brown,
+                color: Colors.white,
                 fontSize: 26,
                 fontWeight: FontWeight.w800,
               ),
@@ -36,7 +37,8 @@ class TituloPage extends StatelessWidget {
               alignment: Alignment.center,
               text: subTitulo,
               size: 26,
-              color: Colors.brown,
+              // color: Colors.brown,
+              color: Colors.white,
             ),
           ),
         ],

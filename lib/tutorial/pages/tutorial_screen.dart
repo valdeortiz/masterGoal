@@ -5,8 +5,9 @@ class TutorialScreen extends StatefulWidget {
   const TutorialScreen({super.key});
   static const tutorialScreenPath = '/tutorial';
   static const numberCell = 13;
+  // static const numberCellY = 13;
   // static const numeroFilas = 13;
-  // static const numeroColumnas = 11;
+  static const numeroColumnas = 13;
 
   @override
   State<TutorialScreen> createState() => _TutorialScreenState();
@@ -16,26 +17,26 @@ class _TutorialScreenState extends State<TutorialScreen> {
   final List<String> mensajes = [
     'Bienvenido a MASTERGOAL, el juego es un partido de futbol transladado a un tablero',
     'El tablero es de 13x11 que representa a la cancha, las casillas con puntos son las especiales',
-    'Tablero',
+    // 'Tablero',
     'El juego consiste en meter goles, es decir, hacer llegar la ficha de la pelota hasta las casillas que sobresalen del extremo',
-    'Casillas del arco',
+    // 'Casillas del arco',
     'El nivel 1 involucra a dos jugadores, uno por equipo. Al inicio de la partida cada jugador se encuentra en su area a 2 casillas de la pelota, que se encuentra en el centro de la cancha'
-        'Jugadores',
-    'Al iniciar la pelota se encutra en el centro de la cancha',
-    'Pelota',
+        // 'Jugadores',
+        'Al iniciar la pelota se encutra en el centro de la cancha',
+    // 'Pelota',
     'El flujo del juego se da por turnos intercalados entre jugadores. En cada turno se mueve mover la ficha del jugador y del balon',
     'En su turno el jugador puede moverse 1 o 2 casillas en linea recta, en cualquier direccion',
-    'Movimientos del jugador',
+    // 'Movimientos del jugador',
     'Para mover la pelota, el jugador debe moverse a una casilla contigua a la pelota',
-    'Casillas de posesion',
+    // 'Casillas de posesion',
     'De esta manera el jugador toma posesion de la pelota y puede moverla, la pelota se puede mover hasta 4 casillas de distancia en linea recta , hacia cualquier direccion',
-    'Movimiento de la pelota',
-    'Un jugador no puede dejar la pelota dentro de su propia area o en el corner propio y tampoco puede entregarsela a un jugador contrario',
-    'Area del jugador 1',
-    'Corner del jugador 1',
-    'Area de posicion del jugador 2',
-    'Area del juego',
-    'La pelota puede saltar a los jugadores',
+    // 'Movimiento de la pelota',
+    // 'Un jugador no puede dejar la pelota dentro de su propia area o en el corner propio y tampoco puede entregarsela a un jugador contrario',
+    // 'Area del jugador 1',
+    // 'Corner del jugador 1',
+    // 'Area de posicion del jugador 2',
+    // 'Area del juego',
+    // 'La pelota puede saltar a los jugadores',
     'Felicidades por completar el tutorial, ahora estas listo/a para disfruta !'
   ];
   // final List<String> titulos = ['Jugadores', 'que', 'tal'];
@@ -77,24 +78,6 @@ class _TutorialScreenState extends State<TutorialScreen> {
     // WidgetsBinding.instance.removeObserver(this);
   }
 
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   switch (state) {
-  //     case AppLifecycleState.resumed:
-  //       print("re");
-  //       _showDialog(context);
-  //       break;
-  //     case AppLifecycleState.inactive:
-  //       print("in");
-  //       break;
-  //     case AppLifecycleState.paused:
-  //       print("pa");
-  //       break;
-  //     case AppLifecycleState.detached:
-  //       break;
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     final sizeScreen =
@@ -126,24 +109,39 @@ class _TutorialScreenState extends State<TutorialScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ...List.generate(
-            TutorialScreen.numberCell,
-            (y) => Row(
-                  children: [
-                    ...List.generate(
-                      TutorialScreen.numberCell,
-                      (x) => Container(
-                        decoration: BoxDecoration(
-                            // color: buildColor(x, y),
-                            color: Colors.lightGreen[700],
-                            // color: const Color(0xFF79D56F),
-                            border: buildBorder(x, y)),
-                        height: sizeScreen,
-                        width: sizeScreen,
-                        child: buildTextCell(x, y),
-                      ),
-                    )
-                  ],
-                ))
+          TutorialScreen.numberCell,
+          (fila) => Row(
+            children: [
+              ...List.generate(
+                TutorialScreen.numeroColumnas,
+                (columna) => Container(
+                  decoration: BoxDecoration(
+                      // color: buildColor(x, y),
+                      color: Colors.lightGreen[700],
+                      // color: const Color(0xFF79D56F),
+                      border: buildBorder(columna, fila)),
+                  height: sizeScreen,
+                  width: sizeScreen,
+                  child: buildTextCell(columna, fila),
+                ),
+              )
+            ],
+          ),
+        ),
+        // const SizedBox(
+        //   height: 20,
+        // ),
+        // Row(
+        //   // crossAxisAlignment: CrossAxisAlignment.end,
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     MaterialButton(onPressed: () {}, child: const Text("Atras")),
+        //     MaterialButton(
+        //       onPressed: () {},
+        //       child: const Text("Siguiente"),
+        //     )
+        //   ],
+        // ),
       ],
     );
   }

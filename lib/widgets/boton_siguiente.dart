@@ -16,7 +16,7 @@ class BotonSiguiente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 3),
+      margin: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 20),
       child: MaterialButton(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),

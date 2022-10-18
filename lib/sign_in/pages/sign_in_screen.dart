@@ -14,31 +14,43 @@ class SignIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Lottie.asset('assets/lottie/sign-in.json'),
-              const TituloPage(
-                tituloSubrayado: 'Inic',
-                subTitulo: 'io sesion',
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              InputSignIn(
-                inputController: nombreController,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              BotonSiguiente(
-                titulo: 'Iniciar',
-                onTap: () =>
-                    Navigator.of(context).pushNamed(MenuPrincipal.menuPath),
-              )
-            ],
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/madera.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Lottie.asset('assets/lottie/sign-in.json'),
+                const TituloPage(
+                  tituloSubrayado: 'Inic',
+                  subTitulo: 'io sesion',
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                InputSignIn(
+                  inputController: nombreController,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                BotonSiguiente(
+                  titulo: 'Iniciar',
+                  onTap: () => Navigator.of(context).pushNamed(
+                    MenuPrincipal.menuPath,
+                    arguments: nombreController?.text,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

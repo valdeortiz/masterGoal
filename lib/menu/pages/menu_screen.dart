@@ -25,6 +25,29 @@ class MenuPrincipal extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Lottie.asset('assets/lottie/soccer-player.json'),
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                          text: "Bienvenido ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30,
+                          )),
+                      TextSpan(
+                        text: "${ModalRoute.of(context)?.settings.arguments}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green[200],
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               TextButton(
                 onPressed: () {
                   Navigator.pushNamed(
