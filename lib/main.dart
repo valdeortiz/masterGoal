@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mastergoal/menu/pages/menu_screen.dart';
+import 'package:mastergoal/play/screens/play_screen.dart';
 import 'package:mastergoal/sign_in/pages/sign_in_screen.dart';
 import 'package:mastergoal/tutorial/pages/tutorial_screen.dart';
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         SignIn.singInPath: (context) => SignIn(),
         MenuPrincipal.menuPath: (context) => const MenuPrincipal(),
         TutorialScreen.tutorialScreenPath: (context) => const TutorialScreen(),
+        PlayScreen.playScreenPath: (context) => const PlayScreen(),
       },
     );
   }
