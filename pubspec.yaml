@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   lottie: ^1.4.3
   showcaseview: ^1.1.8
+  sizer: ^2.0.15
 
 dev_dependencies:
   flutter_test:

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mastergoal/constanst.dart';
-
-class Player {
-  int xPosicion = 0;
-  int yPosicion = 0;
-  Player({this.xPosicion = 0, this.yPosicion = 0});
-}
+import 'package:mastergoal/game_coordinator.dart';
+import 'package:mastergoal/pieces/mg_pieces.dart';
 
 class PlayScreen extends StatefulWidget {
   const PlayScreen({super.key});
@@ -60,6 +56,14 @@ class BoardWidget extends StatefulWidget {
 }
 
 class _BoardWidgetState extends State<BoardWidget> {
+  late final double tileWidth = MediaQuery.of(context).size.width / 8.0;
+
+  final Color green = const Color.fromRGBO(119, 149, 86, 100);
+  final Color listGreen = const Color.fromRGBO(235, 236, 208, 100);
+
+  final GameCoordinator coordinator = GameCoordinator.newGame();
+
+  List<MgPiece> get pieces => coordinator.pieces;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -73,29 +77,7 @@ class _BoardWidgetState extends State<BoardWidget> {
                 ...List.generate(
                   Constantes.columnas,
                   (columna) => Expanded(
-                    child: DragTarget<Player>(
-                      onAccept: (data) {
-                        print("datA: $data");
-                      },
-                      onWillAccept: (data) {
-                        print("OnWill: $data");
-                        if (data == null) {
-                          return false;
-                        }
-                        return true;
-                      },
-                      builder: (context, candidateData, rejectedData) =>
-                          Container(
-                        decoration: BoxDecoration(
-                            // color: buildColor(x, y),
-                            color: Colors.lightGreen[700],
-                            // color: const Color(0xFF79D56F),
-                            border: buildBorder(columna, fila)),
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: buildTextCell(columna, fila),
-                      ),
-                    ),
+                    child: buildDragTarget(columna, fila),
                   ),
                 )
               ],
@@ -106,52 +88,97 @@ class _BoardWidgetState extends State<BoardWidget> {
     );
   }
 
+  DragTarget<MgPiece> buildDragTarget(int columna, int fila) {
+    return DragTarget<MgPiece>(
+      onAccept: (piece) {
+        final capturedPiece = coordinator.pieceOfTile(columna, fila);
+        print("piece: $piece");
+        print("ca: $capturedPiece");
+        print("acc: $fila, $columna");
+      },
+      onWillAccept: (piece) {
+        print("$fila , $columna");
+        print("OnWill: $piece");
+        if (piece == null) {
+          return false;
+        }
+        final canMoveTo = piece.canMoveTo(fila, columna, pieces);
+        final canCapture = piece.canCapture(fila, columna, pieces);
+
+        return canMoveTo || canCapture;
+      },
+      builder: (context, candidateData, rejectedData) => Container(
+        decoration: BoxDecoration(
+            // color: buildColor(x, y),
+            color: Colors.lightGreen[700],
+            // color: const Color(0xFF79D56F),
+            border: buildBorder(columna, fila)),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: buildTextCell(columna, fila),
+      ),
+    );
+  }
+
   Widget buildTextCell(int x, int y) {
-    if (x == (Constantes.columnas - 1) / 2 &&
-        y == (Constantes.columnas - 1) / 2) {
-      // if (x == 6 && y == 6) {
-      return assetPaint("assets/ball.jpg");
-    }
-    if (x == ((Constantes.columnas - 1) / 2) - 1 &&
-        y == ((Constantes.columnas - 1) / 2)) {
-      return assetPaint("assets/player.png");
-    }
-    if (x == ((Constantes.columnas - 1) / 2) + 1 &&
-        y == ((Constantes.columnas - 1) / 2)) {
-      return assetPaint("assets/player.png");
-    }
-    if ((x == Constantes.columnas - 1 && y == Constantes.columnas - 1) ||
-        (x == 0 && y == 0) ||
-        (x == 0 && y == Constantes.columnas - 1) ||
-        (x == Constantes.columnas - 1 && y == 0)) {
-      return const Text(
-        '◉',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-        ),
-      );
-    }
-    if ((x == Constantes.columnas - 1 || x == 0) &&
-        (y < Constantes.columnas / 2 + 3 && y > 2)) {
-      return const Text(
-        '◉',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-        ),
-      );
-    }
-    return const Text(
-      '',
+    final piece = coordinator.pieceOfTile(x, y);
+    const texto = Text(
+      '◉',
       textAlign: TextAlign.center,
       style: TextStyle(
         color: Colors.white,
       ),
     );
+    final textoW = Draggable(
+      data: piece,
+      feedback: texto,
+      childWhenDragging: const SizedBox.shrink(),
+      child: texto,
+    );
+    if (x == (Constantes.columnas - 1) / 2 &&
+        y == (Constantes.columnas - 1) / 2) {
+      // if (x == 6 && y == 6) {
+      return assetPaint("assets/ball.jpg", piece);
+    }
+    if (x == ((Constantes.columnas - 1) / 2) - 1 &&
+        y == ((Constantes.columnas - 1) / 2)) {
+      return assetPaint("assets/player.png", piece);
+    }
+    if (x == ((Constantes.columnas - 1) / 2) + 1 &&
+        y == ((Constantes.columnas - 1) / 2)) {
+      return assetPaint("assets/player.png", piece);
+    }
+    if ((x == Constantes.columnas - 1 && y == Constantes.columnas - 1) ||
+        (x == 0 && y == 0) ||
+        (x == 0 && y == Constantes.columnas - 1) ||
+        (x == Constantes.columnas - 1 && y == 0)) {
+      return textoW;
+    }
+    if ((x == Constantes.columnas - 1 || x == 0) &&
+        (y < Constantes.columnas / 2 + 3 && y > 2)) {
+      return textoW;
+    }
+    return Draggable(
+      data: piece,
+      feedback: const Text(
+        '',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      childWhenDragging: const SizedBox.shrink(),
+      child: const Text(
+        '',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 
-  assetPaint(String asset) {
+  assetPaint(String asset, piece) {
     final child = Container(
       alignment: Alignment.center,
       child: Image.asset(
@@ -161,6 +188,8 @@ class _BoardWidgetState extends State<BoardWidget> {
       ),
     );
     return Draggable(
+      // data: player,
+      data: piece,
       feedback: child,
       childWhenDragging: const SizedBox.shrink(),
       child: child,
