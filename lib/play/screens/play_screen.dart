@@ -73,15 +73,28 @@ class _BoardWidgetState extends State<BoardWidget> {
                 ...List.generate(
                   Constantes.columnas,
                   (columna) => Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          // color: buildColor(x, y),
-                          color: Colors.lightGreen[700],
-                          // color: const Color(0xFF79D56F),
-                          border: buildBorder(columna, fila)),
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: buildTextCell(columna, fila),
+                    child: DragTarget<Player>(
+                      onAccept: (data) {
+                        print("datA: $data");
+                      },
+                      onWillAccept: (data) {
+                        print("OnWill: $data");
+                        if (data == null) {
+                          return false;
+                        }
+                        return true;
+                      },
+                      builder: (context, candidateData, rejectedData) =>
+                          Container(
+                        decoration: BoxDecoration(
+                            // color: buildColor(x, y),
+                            color: Colors.lightGreen[700],
+                            // color: const Color(0xFF79D56F),
+                            border: buildBorder(columna, fila)),
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                        child: buildTextCell(columna, fila),
+                      ),
                     ),
                   ),
                 )
@@ -97,84 +110,15 @@ class _BoardWidgetState extends State<BoardWidget> {
     if (x == (Constantes.columnas - 1) / 2 &&
         y == (Constantes.columnas - 1) / 2) {
       // if (x == 6 && y == 6) {
-      return Draggable(
-        feedback: Stack(
-          children: [
-            Container(
-              color: Colors.black,
-            ),
-          ],
-        ),
-        childWhenDragging: Container(color: Colors.amber),
-        child: Stack(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 20,
-                  width: 20,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/ball.jpg"),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
+      return assetPaint("assets/ball.jpg");
     }
     if (x == ((Constantes.columnas - 1) / 2) - 1 &&
         y == ((Constantes.columnas - 1) / 2)) {
-      // if (x == 6 && y == 6) {
-      return Stack(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: 20,
-                width: 20,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/player.png"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      );
+      return assetPaint("assets/player.png");
     }
     if (x == ((Constantes.columnas - 1) / 2) + 1 &&
         y == ((Constantes.columnas - 1) / 2)) {
-      // if (x == 6 && y == 6) {
-      return Stack(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: 20,
-                width: 20,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/player.png"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      );
+      return assetPaint("assets/player.png");
     }
     if ((x == Constantes.columnas - 1 && y == Constantes.columnas - 1) ||
         (x == 0 && y == 0) ||
@@ -204,6 +148,22 @@ class _BoardWidgetState extends State<BoardWidget> {
       style: TextStyle(
         color: Colors.white,
       ),
+    );
+  }
+
+  assetPaint(String asset) {
+    final child = Container(
+      alignment: Alignment.center,
+      child: Image.asset(
+        asset,
+        height: MediaQuery.of(context).size.height * 0.8 / Constantes.columnas,
+        width: MediaQuery.of(context).size.width * 0.8 / Constantes.columnas,
+      ),
+    );
+    return Draggable(
+      feedback: child,
+      childWhenDragging: const SizedBox.shrink(),
+      child: child,
     );
   }
 
