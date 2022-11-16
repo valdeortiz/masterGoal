@@ -69,7 +69,6 @@ class _BoardWidgetState extends State<BoardWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      // mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ...List.generate(
           Constantes.filas,
@@ -96,26 +95,30 @@ class _BoardWidgetState extends State<BoardWidget> {
         print("piece: $piece");
         print("acc: $fila, $columna");
         piece.location = Location(columna, fila);
+        coordinator.currentTurn = piece.pieceType == PlayerType.player1
+            ? PlayerType.player2
+            : PlayerType.player1;
         setState(() {});
       },
       onWillAccept: (piece) {
-        return true;
-        print("$fila , $columna");
-        print("OnWill: $piece");
         if (piece == null) {
           return false;
         }
+        if (coordinator.currentTurn != piece.pieceType) {
+          return false;
+        }
+        return true;
+        print("$fila , $columna");
+        print("OnWill: $piece");
         // final canMoveTo = piece.canMoveTo(fila, columna, pieces);
-        // final canCapture = piece.canCapture(fila, columna, pieces);
 
         // return canMoveTo || canCapture;
       },
       builder: (context, candidateData, rejectedData) => Container(
         decoration: BoxDecoration(
-            // color: buildColor(x, y),
-            color: Colors.lightGreen[700],
-            // color: const Color(0xFF79D56F),
-            border: buildBorder(columna, fila)),
+          color: Colors.lightGreen[700],
+          border: buildBorder(columna, fila),
+        ),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: buildTextCell(columna, fila),

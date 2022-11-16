@@ -39,13 +39,8 @@ abstract class MgPiece {
 
   List<Location> moves(List<MgPiece> others);
 
-  List<Location> captures(List<MgPiece> others);
-
   bool canMoveTo(int x, int y, List<MgPiece> others) =>
       moves(others).contains(Location(x, y));
-
-  bool canCapture(int x, int y, List<MgPiece> others) =>
-      captures(others).contains(Location(x, y));
 
   @override
   String toString() => "$name($x, $y)";

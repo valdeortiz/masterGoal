@@ -19,16 +19,6 @@ class Bishop extends MgPiece {
     ].toList();
   }
 
-  @override
-  List<Location> captures(List<MgPiece> others) {
-    return <Location>[
-      ..._generateCapturesOnDiagonal(true, true, others),
-      ..._generateCapturesOnDiagonal(false, true, others),
-      ..._generateCapturesOnDiagonal(true, false, others),
-      ..._generateCapturesOnDiagonal(false, false, others),
-    ].toList();
-  }
-
   List<Location> _generateMovesOnDiagonal(
     bool isUp,
     bool isRight,
@@ -53,32 +43,6 @@ class Bishop extends MgPiece {
       }
 
       return destination;
-    }).whereType<Location>().where((location) => location.isValid).toList();
-  }
-
-  List<Location> _generateCapturesOnDiagonal(
-    bool isUp,
-    bool isRight,
-    List<MgPiece> pieces,
-  ) {
-    bool hasFoundCapture = false;
-
-    return List<Location?>.generate(8, (i) {
-      if (hasFoundCapture) return null;
-
-      int dx = (isRight ? 1 : -1) * i;
-      int dy = (isUp ? 1 : -1) * i;
-
-      final destination = Location(x + dx, y + dy);
-
-      final pieceOnLocation =
-          pieces.any((piece) => piece.location == destination);
-
-      if (pieceOnLocation && location != destination) {
-        hasFoundCapture = true;
-        return destination;
-      }
-      return null;
     }).whereType<Location>().where((location) => location.isValid).toList();
   }
 }
