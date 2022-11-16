@@ -33,7 +33,8 @@ class MyApp extends StatelessWidget {
           iconTheme: iconThemeData1,
           primaryIconTheme: iconThemeData1,
         ),
-        initialRoute: SignIn.singInPath,
+        // initialRoute: SignIn.singInPath,
+        initialRoute: PlayScreen.playScreenPath,
         routes: {
           SignIn.singInPath: (context) => SignIn(),
           MenuPrincipal.menuPath: (context) => const MenuPrincipal(),

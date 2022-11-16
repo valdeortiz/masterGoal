@@ -5,7 +5,7 @@ import 'package:mastergoal/pieces/mg_pieces.dart';
 class GameCoordinator {
   final List<MgPiece> pieces;
 
-  PlayerColor currentTurn = PlayerColor.white;
+  PlayerType currentTurn = PlayerType.player1;
 
   GameCoordinator(this.pieces);
 
@@ -15,11 +15,9 @@ class GameCoordinator {
   factory GameCoordinator.newGame() {
     return GameCoordinator(
       [
-        Bishop(PlayerColor.white, Location(6, 5)),
-        Bishop(PlayerColor.black, Location(6, 7)),
-        // Bishop(PlayerColor.white, Location(5, 0)),
-        // Bishop(PlayerColor.black, Location(2, 7)),
-        // Bishop(PlayerColor.black, Location(5, 7)),
+        Bishop(PlayerType.player1, Location(5, 6)),
+        Bishop(PlayerType.ball, Location(6, 6)),
+        Bishop(PlayerType.player2, Location(7, 6)),
       ],
     );
   }

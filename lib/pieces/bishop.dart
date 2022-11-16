@@ -2,12 +2,12 @@ import 'mg_pieces.dart';
 
 class Bishop extends MgPiece {
   @override
-  String get name => "bishop";
+  String get name => pieceType.name;
 
   Bishop(
-    PlayerColor pieceColor,
+    PlayerType pieceType,
     Location location,
-  ) : super(pieceColor, location);
+  ) : super(pieceType, location);
 
   @override
   List<Location> moves(List<MgPiece> others) {

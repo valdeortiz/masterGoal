@@ -1,4 +1,4 @@
-enum PlayerColor { black, white }
+enum PlayerType { player1, player2, ball }
 
 class Location {
   final int x;
@@ -21,21 +21,19 @@ class Location {
 }
 
 abstract class MgPiece {
-  final PlayerColor pieceColor;
+  final PlayerType pieceType;
   Location location;
 
   String get name;
 
-  String get fileName =>
-      // "assets/${pieceColor.toString().split(".").last}_$name.png";
-      "assets/player.png";
+  String get fileName => "assets/${pieceType.name}.png";
 
   int get x => location.x;
 
   int get y => location.y;
 
   MgPiece(
-    this.pieceColor,
+    this.pieceType,
     this.location,
   );
 

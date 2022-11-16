@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mastergoal/constanst.dart';
 import 'package:mastergoal/game_coordinator.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
@@ -15,7 +16,7 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   void initState() {
     super.initState();
-    // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   @override
@@ -56,7 +57,8 @@ class BoardWidget extends StatefulWidget {
 }
 
 class _BoardWidgetState extends State<BoardWidget> {
-  late final double tileWidth = MediaQuery.of(context).size.width / 8.0;
+  late final double tileWidth =
+      MediaQuery.of(context).size.width / Constantes.columnas;
 
   final Color green = const Color.fromRGBO(119, 149, 86, 100);
   final Color listGreen = const Color.fromRGBO(235, 236, 208, 100);
@@ -88,24 +90,25 @@ class _BoardWidgetState extends State<BoardWidget> {
     );
   }
 
-  DragTarget<MgPiece> buildDragTarget(int columna, int fila) {
+  DragTarget buildDragTarget(int columna, int fila) {
     return DragTarget<MgPiece>(
       onAccept: (piece) {
-        final capturedPiece = coordinator.pieceOfTile(columna, fila);
         print("piece: $piece");
-        print("ca: $capturedPiece");
         print("acc: $fila, $columna");
+        piece.location = Location(columna, fila);
+        setState(() {});
       },
       onWillAccept: (piece) {
+        return true;
         print("$fila , $columna");
         print("OnWill: $piece");
         if (piece == null) {
           return false;
         }
-        final canMoveTo = piece.canMoveTo(fila, columna, pieces);
-        final canCapture = piece.canCapture(fila, columna, pieces);
+        // final canMoveTo = piece.canMoveTo(fila, columna, pieces);
+        // final canCapture = piece.canCapture(fila, columna, pieces);
 
-        return canMoveTo || canCapture;
+        // return canMoveTo || canCapture;
       },
       builder: (context, candidateData, rejectedData) => Container(
         decoration: BoxDecoration(
@@ -122,6 +125,9 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   Widget buildTextCell(int x, int y) {
     final piece = coordinator.pieceOfTile(x, y);
+    if (piece != null) {
+      return assetPaint(piece, x, y);
+    }
     const texto = Text(
       '◉',
       textAlign: TextAlign.center,
@@ -129,69 +135,39 @@ class _BoardWidgetState extends State<BoardWidget> {
         color: Colors.white,
       ),
     );
-    final textoW = Draggable(
-      data: piece,
-      feedback: texto,
-      childWhenDragging: const SizedBox.shrink(),
-      child: texto,
-    );
-    if (x == (Constantes.columnas - 1) / 2 &&
-        y == (Constantes.columnas - 1) / 2) {
-      // if (x == 6 && y == 6) {
-      return assetPaint("assets/ball.jpg", piece);
-    }
-    if (x == ((Constantes.columnas - 1) / 2) - 1 &&
-        y == ((Constantes.columnas - 1) / 2)) {
-      return assetPaint("assets/player.png", piece);
-    }
-    if (x == ((Constantes.columnas - 1) / 2) + 1 &&
-        y == ((Constantes.columnas - 1) / 2)) {
-      return assetPaint("assets/player.png", piece);
-    }
+
     if ((x == Constantes.columnas - 1 && y == Constantes.columnas - 1) ||
         (x == 0 && y == 0) ||
         (x == 0 && y == Constantes.columnas - 1) ||
         (x == Constantes.columnas - 1 && y == 0)) {
-      return textoW;
+      return texto;
     }
     if ((x == Constantes.columnas - 1 || x == 0) &&
         (y < Constantes.columnas / 2 + 3 && y > 2)) {
-      return textoW;
+      return texto;
     }
-    return Draggable(
-      data: piece,
-      feedback: const Text(
-        '',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-        ),
-      ),
-      childWhenDragging: const SizedBox.shrink(),
-      child: const Text(
-        '',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-        ),
+    return const Text(
+      '',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Colors.white,
       ),
     );
   }
 
-  assetPaint(String asset, piece) {
+  assetPaint(MgPiece piece, x, y) {
     final child = Container(
       alignment: Alignment.center,
       child: Image.asset(
-        asset,
+        piece.fileName,
         height: MediaQuery.of(context).size.height * 0.8 / Constantes.columnas,
         width: MediaQuery.of(context).size.width * 0.8 / Constantes.columnas,
       ),
     );
     return Draggable(
-      // data: player,
       data: piece,
       feedback: child,
-      childWhenDragging: const SizedBox.shrink(),
+      childWhenDragging: Container(color: Colors.lightGreen),
       child: child,
     );
   }
