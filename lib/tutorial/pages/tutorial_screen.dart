@@ -93,7 +93,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
         ),
         child: Stack(
           children: [
-            TableroPuntuacion(sizeScreen: sizeScreen),
+            // const TableroPuntuacion(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: buildBoard(sizeScreen),
@@ -502,136 +502,6 @@ class _TutorialScreenState extends State<TutorialScreen> {
     //     color: (x == numberCell - 1 || y == numberCell - 1 || x == 0 || y == 0)
     //         ? Colors.white
     //         : Colors.grey);
-  }
-}
-
-class TableroPuntuacion extends StatelessWidget {
-  const TableroPuntuacion({
-    Key? key,
-    required this.sizeScreen,
-  }) : super(key: key);
-
-  final double sizeScreen;
-  final TextStyle _style =
-      const TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(5.0),
-                decoration: const BoxDecoration(color: Colors.blueAccent),
-                height: sizeScreen,
-                // width: sizeScreen,
-                alignment: Alignment.center,
-                child: Text(
-                  "Home",
-                  textAlign: TextAlign.center,
-                  style: _style,
-                ),
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.blueAccent,
-                  border: Border(
-                    left: BorderSide(
-                      //                   <--- left side
-                      // color: Colors.black,
-                      color: Colors.white,
-                      width: 3.0,
-                    ),
-                  ),
-                ),
-                height: sizeScreen,
-                width: sizeScreen,
-                alignment: Alignment.center,
-                child: Text(
-                  "0",
-                  textAlign: TextAlign.center,
-                  style: _style,
-                ),
-              ),
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.blueAccent,
-                  border: Border(
-                    left: BorderSide(
-                      color: Colors.white,
-                      width: 3.0,
-                    ),
-                    right: BorderSide(
-                      color: Colors.white,
-                      width: 3.0,
-                    ),
-                  ),
-                ),
-                height: sizeScreen,
-                width: sizeScreen,
-                alignment: Alignment.center,
-                child: Text(
-                  "0",
-                  textAlign: TextAlign.center,
-                  style: _style,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(5.0),
-                decoration: const BoxDecoration(color: Colors.blueAccent),
-                height: sizeScreen,
-                // width: sizeScreen,
-                alignment: Alignment.center,
-                child: Text(
-                  "Away",
-                  textAlign: TextAlign.center,
-                  style: _style,
-                ),
-              ),
-              const Expanded(child: SizedBox()),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.play_circle,
-                  color: Colors.white,
-                  size: 50,
-                ),
-              ),
-              const SizedBox(
-                width: 20,
-              )
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "Turno: Jugador 1",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "00:00",
-              style: TextStyle(
-                  color: Colors.black,
-                  decoration: TextDecoration.underline,
-                  decorationStyle: TextDecorationStyle.solid,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0),
-              textAlign: TextAlign.left,
-            ),
-          )
-        ],
-      ),
-    );
   }
 }
 

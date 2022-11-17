@@ -3,7 +3,7 @@ import 'package:mastergoal/pieces/bishop.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
 
 class GameCoordinator {
-  final List<MgPiece> pieces;
+  final List<Bishop> pieces;
 
   PlayerType currentTurn = PlayerType.player1;
 

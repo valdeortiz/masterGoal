@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mastergoal/constanst.dart';
 import 'package:mastergoal/game_coordinator.dart';
+import 'package:mastergoal/pieces/bishop.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
+import 'package:mastergoal/widgets/tablero_widget.dart';
 
 class PlayScreen extends StatefulWidget {
   const PlayScreen({super.key});
@@ -16,31 +18,25 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
   }
 
   @override
   Widget build(BuildContext context) {
-    // final sizeScreen =
-    //     (MediaQuery.of(context).size.width - 20) / Constantes.columnas;
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
       body: Container(
-        // width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/madera.jpg"),
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height - 20,
-            width: MediaQuery.of(context).size.width - 20,
-            child: const BoardWidget(),
-          ),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: const BoardWidget(),
         ),
       ),
     );
@@ -60,16 +56,20 @@ class _BoardWidgetState extends State<BoardWidget> {
   late final double tileWidth =
       MediaQuery.of(context).size.width / Constantes.columnas;
 
-  final Color green = const Color.fromRGBO(119, 149, 86, 100);
-  final Color listGreen = const Color.fromRGBO(235, 236, 208, 100);
-
   final GameCoordinator coordinator = GameCoordinator.newGame();
 
-  List<MgPiece> get pieces => coordinator.pieces;
+  List<Bishop> get pieces => coordinator.pieces;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        TableroPuntuacion(
+          player1Gol: pieces[0].gols,
+          player2Gol: pieces[1].gols,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
         ...List.generate(
           Constantes.filas,
           (fila) => Expanded(
@@ -85,12 +85,15 @@ class _BoardWidgetState extends State<BoardWidget> {
             ),
           ),
         ),
+        const SizedBox(
+          height: 20,
+        )
       ],
     );
   }
 
   DragTarget buildDragTarget(int columna, int fila) {
-    return DragTarget<MgPiece>(
+    return DragTarget<Bishop>(
       onAccept: (piece) {
         print("piece: $piece");
         print("acc: $fila, $columna");
@@ -112,7 +115,7 @@ class _BoardWidgetState extends State<BoardWidget> {
         print("OnWill: $piece");
         // final canMoveTo = piece.canMoveTo(fila, columna, pieces);
 
-        // return canMoveTo || canCapture;
+        // return canMoveTo;
       },
       builder: (context, candidateData, rejectedData) => Container(
         decoration: BoxDecoration(

@@ -3,6 +3,9 @@ import 'mg_pieces.dart';
 class Bishop extends MgPiece {
   @override
   String get name => pieceType.name;
+  int _gols = 0;
+  int get gols => _gols;
+  marcarGol() => _gols += 1;
 
   Bishop(
     PlayerType pieceType,
