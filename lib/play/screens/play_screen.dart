@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mastergoal/constanst.dart';
 import 'package:mastergoal/game_coordinator.dart';
-import 'package:mastergoal/pieces/bishop.dart';
+import 'package:mastergoal/pieces/player.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
 import 'package:mastergoal/widgets/tablero_widget.dart';
 
@@ -58,14 +58,14 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   final GameCoordinator coordinator = GameCoordinator.newGame();
 
-  List<Bishop> get pieces => coordinator.pieces;
+  List<MgPiece> get pieces => coordinator.pieces;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TableroPuntuacion(
-          player1Gol: pieces[0].gols,
-          player2Gol: pieces[1].gols,
+        const TableroPuntuacion(
+          player1Gol: 0,
+          player2Gol: 0,
         ),
         const SizedBox(
           height: 10,
@@ -93,15 +93,17 @@ class _BoardWidgetState extends State<BoardWidget> {
   }
 
   DragTarget buildDragTarget(int columna, int fila) {
-    return DragTarget<Bishop>(
+    return DragTarget<Player>(
       onAccept: (piece) {
-        print("piece: $piece");
-        print("acc: $fila, $columna");
+        // final move = piece.move();
         piece.location = Location(columna, fila);
-        coordinator.currentTurn = piece.pieceType == PlayerType.player1
-            ? PlayerType.player2
-            : PlayerType.player1;
-        setState(() {});
+        final habilitBall = piece.habBall(coordinator.ball.location);
+        print(habilitBall);
+        setState(() {
+          piece.pieceType == PlayerType.player1
+              ? PlayerType.player2
+              : PlayerType.player1;
+        });
       },
       onWillAccept: (piece) {
         if (piece == null) {
@@ -110,12 +112,12 @@ class _BoardWidgetState extends State<BoardWidget> {
         if (coordinator.currentTurn != piece.pieceType) {
           return false;
         }
-        return true;
-        print("$fila , $columna");
-        print("OnWill: $piece");
-        // final canMoveTo = piece.canMoveTo(fila, columna, pieces);
 
-        // return canMoveTo;
+        print(" $columna, $fila");
+        print("OnWill: $piece");
+        final canMoveTo = piece.canMoveTo(columna, fila);
+
+        return canMoveTo;
       },
       builder: (context, candidateData, rejectedData) => Container(
         decoration: BoxDecoration(

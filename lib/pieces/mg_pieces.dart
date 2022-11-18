@@ -1,3 +1,5 @@
+import 'package:mastergoal/constanst.dart';
+
 enum PlayerType { player1, player2, ball }
 
 class Location {
@@ -6,7 +8,7 @@ class Location {
 
   Location(this.x, this.y);
 
-  bool get isValid => x <= 7 && y <= 7;
+  bool get isValid => x <= Constantes.filas - 1 && y <= Constantes.columnas - 1;
 
   @override
   int get hashCode => x.hashCode ^ y.hashCode;
@@ -39,9 +41,9 @@ abstract class MgPiece {
 
   List<Location> moves(List<MgPiece> others);
 
-  bool canMoveTo(int x, int y, List<MgPiece> others) =>
-      moves(others).contains(Location(x, y));
-
+  // bool canMoveTo(int x, int y, List<MgPiece> others) =>
+  //     moves(others).contains(Location(x, y));
+  bool canMoveTo(int x, int y);
   @override
   String toString() => "$name($x, $y)";
 }
