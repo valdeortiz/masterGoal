@@ -4,8 +4,9 @@ import 'package:mastergoal/play/screens/play_screen.dart';
 import 'package:mastergoal/tutorial/pages/tutorial_screen.dart';
 
 class MenuPrincipal extends StatelessWidget {
-  const MenuPrincipal({Key? key}) : super(key: key);
+  const MenuPrincipal(this.userName, {Key? key}) : super(key: key);
   static const String menuPath = '/menu';
+  final String userName;
   final TextStyle _style = const TextStyle(
       fontWeight: FontWeight.bold, color: Colors.black, fontSize: 30.0);
   @override
@@ -15,7 +16,7 @@ class MenuPrincipal extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/madera.jpg"),
+            image: AssetImage("assets/stadium3.jpg"),
             fit: BoxFit.cover,
           ),
         ),
@@ -32,14 +33,15 @@ class MenuPrincipal extends StatelessWidget {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       children: [
-                        const TextSpan(
-                            text: "Bienvenido ",
-                            style: TextStyle(
+                        TextSpan(
+                            text: "Bienvenido $userName",
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 30,
+                              fontSize: 35,
+                              fontFamily: 'NovaRound',
                             )),
                         TextSpan(
-                          text: "${ModalRoute.of(context)?.settings.arguments}",
+                          text: " $userName",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.green[200],

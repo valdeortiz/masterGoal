@@ -63,7 +63,7 @@ class _BoardWidgetState extends State<BoardWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      // mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ...List.generate(
           Constantes.filas,
