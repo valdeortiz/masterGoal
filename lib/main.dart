@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         Login.loginPath: (context) => const Login(),
         SignIn.singInPath: (context) => SignIn(),
-        MenuPrincipal.menuPath: (context) => const MenuPrincipal(""),
+        MenuPrincipal.menuPath: (context) => MenuPrincipal(""),
         TutorialScreen.tutorialScreenPath: (context) => const TutorialScreen(),
         PlayScreen.playScreenPath: (context) => const PlayScreen(),
       },
