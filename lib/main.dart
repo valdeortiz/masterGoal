@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mastergoal/menu/pages/menu_screen.dart';
 import 'package:mastergoal/play/screens/play_screen.dart';
+import 'package:mastergoal/sign_in/pages/login_screen.dart';
 import 'package:mastergoal/sign_in/pages/sign_in_screen.dart';
 import 'package:mastergoal/tutorial/pages/tutorial_screen.dart';
 import 'package:mastergoal/values/colors_app.dart';
@@ -13,7 +14,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -34,8 +34,9 @@ class MyApp extends StatelessWidget {
           primaryIconTheme: iconThemeData1,
         ),
         // initialRoute: SignIn.singInPath,
-        initialRoute: PlayScreen.playScreenPath,
-        routes: {
+       initialRoute: Login.loginPath,
+      routes: {
+        Login.loginPath: (context) => const Login(),
           SignIn.singInPath: (context) => SignIn(),
           MenuPrincipal.menuPath: (context) => const MenuPrincipal(),
           TutorialScreen.tutorialScreenPath: (context) =>
