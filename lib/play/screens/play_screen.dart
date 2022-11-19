@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mastergoal/constanst.dart';
-
-class Player {
-  int xPosicion = 0;
-  int yPosicion = 0;
-  Player({this.xPosicion = 0, this.yPosicion = 0});
-}
+import 'package:mastergoal/game_coordinator.dart';
+import 'package:mastergoal/pieces/player.dart';
+import 'package:mastergoal/pieces/mg_pieces.dart';
+import 'package:mastergoal/widgets/tablero_widget.dart';
 
 class PlayScreen extends StatefulWidget {
   const PlayScreen({super.key});
@@ -19,31 +18,25 @@ class _PlayScreenState extends State<PlayScreen> {
   @override
   void initState() {
     super.initState();
-    // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
   }
 
   @override
   Widget build(BuildContext context) {
-    // final sizeScreen =
-    //     (MediaQuery.of(context).size.width - 20) / Constantes.columnas;
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
       body: Container(
-        // width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/madera.jpg"),
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height - 20,
-            width: MediaQuery.of(context).size.width - 20,
-            child: const BoardWidget(),
-          ),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: const BoardWidget(),
         ),
       ),
     );
@@ -60,11 +53,23 @@ class BoardWidget extends StatefulWidget {
 }
 
 class _BoardWidgetState extends State<BoardWidget> {
+  late final double tileWidth =
+      MediaQuery.of(context).size.width / Constantes.columnas;
+
+  final GameCoordinator coordinator = GameCoordinator.newGame();
+
+  List<MgPiece> get pieces => coordinator.pieces;
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        const TableroPuntuacion(
+          player1Gol: 0,
+          player2Gol: 0,
+        ),
+        const SizedBox(
+          height: 10,
+        ),
         ...List.generate(
           Constantes.filas,
           (fila) => Expanded(
@@ -73,74 +78,81 @@ class _BoardWidgetState extends State<BoardWidget> {
                 ...List.generate(
                   Constantes.columnas,
                   (columna) => Expanded(
-                    child: DragTarget<Player>(
-                      onAccept: (data) {
-                        print("datA: $data");
-                      },
-                      onWillAccept: (data) {
-                        print("OnWill: $data");
-                        if (data == null) {
-                          return false;
-                        }
-                        return true;
-                      },
-                      builder: (context, candidateData, rejectedData) =>
-                          Container(
-                        decoration: BoxDecoration(
-                            // color: buildColor(x, y),
-                            color: Colors.lightGreen[700],
-                            // color: const Color(0xFF79D56F),
-                            border: buildBorder(columna, fila)),
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: buildTextCell(columna, fila),
-                      ),
-                    ),
+                    child: buildDragTarget(columna, fila),
                   ),
                 )
               ],
             ),
           ),
         ),
+        const SizedBox(
+          height: 20,
+        )
       ],
     );
   }
 
+  DragTarget buildDragTarget(int columna, int fila) {
+    return DragTarget<Player>(
+      onAccept: (piece) {
+        // final move = piece.move();
+        piece.location = Location(columna, fila);
+        final habilitBall = piece.habBall(coordinator.ball.location);
+        print(habilitBall);
+        setState(() {
+          piece.pieceType == PlayerType.player1
+              ? PlayerType.player2
+              : PlayerType.player1;
+        });
+      },
+      onWillAccept: (piece) {
+        if (piece == null) {
+          return false;
+        }
+        if (coordinator.currentTurn != piece.pieceType) {
+          return false;
+        }
+
+        print(" $columna, $fila");
+        print("OnWill: $piece");
+        final canMoveTo = piece.canMoveTo(columna, fila);
+
+        return canMoveTo;
+      },
+      builder: (context, candidateData, rejectedData) => Container(
+        decoration: BoxDecoration(
+          color: Colors.lightGreen[700],
+          border: buildBorder(columna, fila),
+        ),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: buildTextCell(columna, fila),
+      ),
+    );
+  }
+
   Widget buildTextCell(int x, int y) {
-    if (x == (Constantes.columnas - 1) / 2 &&
-        y == (Constantes.columnas - 1) / 2) {
-      // if (x == 6 && y == 6) {
-      return assetPaint("assets/ball.jpg");
+    final piece = coordinator.pieceOfTile(x, y);
+    if (piece != null) {
+      return assetPaint(piece, x, y);
     }
-    if (x == ((Constantes.columnas - 1) / 2) - 1 &&
-        y == ((Constantes.columnas - 1) / 2)) {
-      return assetPaint("assets/player.png");
-    }
-    if (x == ((Constantes.columnas - 1) / 2) + 1 &&
-        y == ((Constantes.columnas - 1) / 2)) {
-      return assetPaint("assets/player.png");
-    }
+    const texto = Text(
+      '◉',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Colors.white,
+      ),
+    );
+
     if ((x == Constantes.columnas - 1 && y == Constantes.columnas - 1) ||
         (x == 0 && y == 0) ||
         (x == 0 && y == Constantes.columnas - 1) ||
         (x == Constantes.columnas - 1 && y == 0)) {
-      return const Text(
-        '◉',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-        ),
-      );
+      return texto;
     }
     if ((x == Constantes.columnas - 1 || x == 0) &&
         (y < Constantes.columnas / 2 + 3 && y > 2)) {
-      return const Text(
-        '◉',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.white,
-        ),
-      );
+      return texto;
     }
     return const Text(
       '',
@@ -151,18 +163,19 @@ class _BoardWidgetState extends State<BoardWidget> {
     );
   }
 
-  assetPaint(String asset) {
+  assetPaint(MgPiece piece, x, y) {
     final child = Container(
       alignment: Alignment.center,
       child: Image.asset(
-        asset,
+        piece.fileName,
         height: MediaQuery.of(context).size.height * 0.8 / Constantes.columnas,
         width: MediaQuery.of(context).size.width * 0.8 / Constantes.columnas,
       ),
     );
     return Draggable(
+      data: piece,
       feedback: child,
-      childWhenDragging: const SizedBox.shrink(),
+      childWhenDragging: Container(color: Colors.lightGreen),
       child: child,
     );
   }
