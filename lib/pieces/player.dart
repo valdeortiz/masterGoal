@@ -12,15 +12,16 @@ class Player extends MgPiece {
     Location location,
   ) : super(pieceType, location);
 
-  habBall(Location ballLocation) {
+  enableBall(Location ballLocation) {
     print("bh $ballLocation");
     print("h $location");
     // La pieza debe estar en una posicion adyacente a la pos de la pelota
-    if ((x < ballLocation.x - 3 || ballLocation.x + 3 < x) &&
-        (x - 3 < ballLocation.y || ballLocation.y < y + 3)) {
-      return false;
+    if ((abs(x - ballLocation.x) <= 1 && abs(y - ballLocation.y) <= 1) ||
+        (y == ballLocation.y && abs(ballLocation.x - x) <= 1) ||
+        x == ballLocation.x && abs(ballLocation.y - y) <= 1) {
+      return true;
     }
-    return true;
+    return false;
   }
 
   @override
@@ -69,5 +70,9 @@ class Player extends MgPiece {
     }
 
     return true;
+  }
+
+  abs(int value) {
+    return value < 0 ? -value : value;
   }
 }

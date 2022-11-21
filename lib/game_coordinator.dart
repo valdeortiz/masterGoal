@@ -13,13 +13,14 @@ class GameCoordinator {
 
   MgPiece? pieceOfTile(int x, int y) =>
       pieces.firstWhereOrNull((p) => p.x == x && p.y == y);
-  BallPiece ball = BallPiece(PlayerType.ball, Location(6, 6));
+  // BallPiece ball = BallPiece(PlayerType.ball, Location(6, 6));
 
   factory GameCoordinator.newGame() {
     return GameCoordinator(
       [
+        BallPiece(PlayerType.ball, Location(6, 6)),
         Player(PlayerType.player1, Location(5, 6)),
-        Player(PlayerType.player2, Location(7, 6)),
+        Player(PlayerType.player2, Location(7, 6))
       ],
     );
   }

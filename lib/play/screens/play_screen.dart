@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:mastergoal/clock/providers/coubtdown_provider.dart';
 import 'package:mastergoal/constanst.dart';
 import 'package:mastergoal/game_coordinator.dart';
-import 'package:mastergoal/pieces/player.dart';
+import 'package:mastergoal/game_coordinator_provider.dart';
+import 'package:mastergoal/pieces/ball.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
+import 'package:mastergoal/pieces/player.dart';
 import 'package:mastergoal/widgets/tablero_widget.dart';
+import 'package:provider/provider.dart';
 
-class PlayScreen extends StatefulWidget {
-  const PlayScreen({super.key});
+class PlayScreen extends StatelessWidget {
   static const playScreenPath = '/play';
 
-  @override
-  State<PlayScreen> createState() => _PlayScreenState();
-}
-
-class _PlayScreenState extends State<PlayScreen> {
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
-  }
+  const PlayScreen({super.key});
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final clockProvider = Provider.of<CountdownProvider>(context);
+    // final game = Provider.of<GameCoordProvider>(context);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -36,7 +37,32 @@ class _PlayScreenState extends State<PlayScreen> {
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          child: const BoardWidget(),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const TableroPuntuacion(),
+                  const SizedBox(
+                    width: 10.0,
+                  ),
+                  Text(
+                    context.select((CountdownProvider countdown) =>
+                        countdown.timeLeftString),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                      "Turno: ${context.select((GameCoordProvider gamePro) => gamePro.currentTurn.name)}")
+                ],
+              ),
+              Expanded(
+                  child: BoardWidget(
+                clockProvider: clockProvider,
+              )),
+            ],
+          ),
         ),
       ),
     );
@@ -44,10 +70,8 @@ class _PlayScreenState extends State<PlayScreen> {
 }
 
 class BoardWidget extends StatefulWidget {
-  const BoardWidget({
-    super.key,
-  });
-
+  const BoardWidget({super.key, this.clockProvider});
+  final CountdownProvider? clockProvider;
   @override
   State<BoardWidget> createState() => _BoardWidgetState();
 }
@@ -60,13 +84,22 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   List<MgPiece> get pieces => coordinator.pieces;
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => widget.clockProvider?.startStopTimer());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const TableroPuntuacion(
-          player1Gol: 0,
-          player2Gol: 0,
-        ),
         const SizedBox(
           height: 10,
         ),
@@ -93,23 +126,48 @@ class _BoardWidgetState extends State<BoardWidget> {
   }
 
   DragTarget buildDragTarget(int columna, int fila) {
-    return DragTarget<Player>(
+    return DragTarget<MgPiece>(
       onAccept: (piece) {
         // final move = piece.move();
+        widget.clockProvider?.setCountdownDuration(const Duration(seconds: 20));
+        widget.clockProvider?.startStopTimer();
+        late bool habilitBall;
         piece.location = Location(columna, fila);
-        final habilitBall = piece.habBall(coordinator.ball.location);
-        print(habilitBall);
-        setState(() {
-          piece.pieceType == PlayerType.player1
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .changeTurn(piece);
+        if (piece is BallPiece) {
+          coordinator.currentBallTurn = null;
+          coordinator.currentTurn = piece.pieceType == PlayerType.player1
               ? PlayerType.player2
               : PlayerType.player1;
-        });
+          setState(() {});
+          return;
+        }
+        habilitBall = piece is Player
+            ? piece.enableBall(coordinator.pieces[0].location)
+            : false;
+
+        print(habilitBall);
+        coordinator.currentBallTurn = habilitBall ? piece.pieceType : null;
+
+        if (!habilitBall) {
+          coordinator.currentTurn = piece.pieceType == PlayerType.player1
+              ? PlayerType.player2
+              : PlayerType.player1;
+        }
+
+        // if (habilitBall) {
+        //   coordinator.currentTurn = coordinator.pieces.first.pieceType;
+        // }
+
+        setState(() {});
       },
       onWillAccept: (piece) {
         if (piece == null) {
           return false;
         }
-        if (coordinator.currentTurn != piece.pieceType) {
+        if (coordinator.currentBallTurn == null &&
+            coordinator.currentTurn != piece.pieceType) {
           return false;
         }
 

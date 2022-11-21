@@ -6,7 +6,8 @@ class BallPiece extends MgPiece {
   @override
   List<Location> moves(List<MgPiece> others) {
     // TODO: implement moves
-    throw UnimplementedError();
+    print("moves");
+    return [];
   }
 
   @override
@@ -16,6 +17,8 @@ class BallPiece extends MgPiece {
   @override
   bool canMoveTo(int x, int y) {
     // TODO: implement canMoveTo
-    throw UnimplementedError();
+    // throw UnimplementedError();
+    print("move");
+    return true;
   }
 }

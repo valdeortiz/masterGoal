@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mastergoal/game_coordinator_provider.dart';
+import 'package:provider/provider.dart';
 
 class TableroPuntuacion extends StatelessWidget {
-  const TableroPuntuacion(
-      {Key? key, required this.player1Gol, required this.player2Gol})
-      : super(key: key);
+  const TableroPuntuacion({Key? key}) : super(key: key);
 
   final TextStyle _style =
       const TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
-  final int player1Gol;
-  final int player2Gol;
 
   @override
   Widget build(BuildContext context) {
+    // final game = Provider.of<GameCoordProvider>(context);
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +41,8 @@ class TableroPuntuacion extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  "$player1Gol",
+                  context.select((GameCoordProvider gamePro) =>
+                      gamePro.player1Gols.toString()),
                   textAlign: TextAlign.center,
                   style: _style,
                 ),
@@ -65,7 +65,8 @@ class TableroPuntuacion extends StatelessWidget {
                 // width: sizeScreen,
                 alignment: Alignment.center,
                 child: Text(
-                  "$player2Gol",
+                  context.select((GameCoordProvider gamePro) =>
+                      gamePro.player2Gols.toString()),
                   textAlign: TextAlign.center,
                   style: _style,
                 ),
