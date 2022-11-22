@@ -6,6 +6,7 @@ import 'package:mastergoal/pieces/player.dart';
 class GameCoordProvider extends ChangeNotifier {
   int player1Gols = 0;
   int player2Gols = 0;
+
   PlayerType currentTurn = PlayerType.player1;
   List<MgPiece> pieces = [
     BallPiece(PlayerType.ball, Location(6, 6)),

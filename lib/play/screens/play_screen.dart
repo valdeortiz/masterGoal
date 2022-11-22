@@ -138,9 +138,12 @@ class _BoardWidgetState extends State<BoardWidget> {
       onAccept: (piece) {
         print("OnAcep: $piece");
         // final move = piece.move();
+        // logica del reloj, pongo a 20 seg e inicio
         widget.clockProvider?.setCountdownDuration(const Duration(seconds: 20));
         widget.clockProvider?.startStopTimer();
+        // esta variable verifica si esta habilitado a mover la pelota
         late bool habilitBall;
+        // seteamos la nueva posicion de la ficha
         piece.location = Location(columna, fila);
 
         if (piece is BallPiece) {

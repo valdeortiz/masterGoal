@@ -7,6 +7,9 @@ class GameCoordinator {
   final List<MgPiece> pieces;
 
   // PlayerType currentTurn = PlayerType.player1;
+  // Con esta variable verificamos si hay algun jugador que pueda mover la pelota
+  // en caso de ser nulo no se puede mover la pelota
+  // y en caso de que si se pueda mover se debe asignar el PlayerType a la variable
   PlayerType? currentBallTurn;
 
   GameCoordinator(this.pieces);
