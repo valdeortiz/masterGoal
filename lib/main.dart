@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mastergoal/clock/providers/coubtdown_provider.dart';
 import 'package:mastergoal/game_coordinator_provider.dart';
 import 'package:mastergoal/menu/pages/menu_screen.dart';
@@ -12,12 +13,13 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {
-  // SystemChrome.setPreferredOrientations(
-  //   const [
-  //     DeviceOrientation.portraitDown,
-  //     DeviceOrientation.portraitUp,
-  //   ],
-  // );
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+    const [
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ],
+  );
   runApp(const MyApp());
 }
 
@@ -51,9 +53,9 @@ class MyApp extends StatelessWidget {
             iconTheme: iconThemeData1,
             primaryIconTheme: iconThemeData1,
           ),
-          // initialRoute: SignIn.singInPath,
-          // initialRoute: Login.loginPath,
-          initialRoute: PlayScreen.playScreenPath,
+
+          initialRoute: Login.loginPath,
+          // initialRoute: PlayScreen.playScreenPath,
           routes: {
             Login.loginPath: (context) => const Login(),
             SignIn.singInPath: (context) => SignIn(),

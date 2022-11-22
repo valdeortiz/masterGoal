@@ -6,7 +6,7 @@ import 'package:mastergoal/pieces/mg_pieces.dart';
 class GameCoordinator {
   final List<MgPiece> pieces;
 
-  PlayerType currentTurn = PlayerType.player1;
+  // PlayerType currentTurn = PlayerType.player1;
   PlayerType? currentBallTurn;
 
   GameCoordinator(this.pieces);
@@ -19,9 +19,16 @@ class GameCoordinator {
     return GameCoordinator(
       [
         BallPiece(PlayerType.ball, Location(6, 6)),
-        Player(PlayerType.player1, Location(5, 6)),
-        Player(PlayerType.player2, Location(7, 6))
+        Player(PlayerType.player1, Location(3, 6)),
+        Player(PlayerType.player2, Location(9, 6))
       ],
     );
+  }
+
+  void restart() {
+    pieces[0] = BallPiece(PlayerType.ball, Location(6, 6));
+    pieces[1] = Player(PlayerType.player1, Location(3, 6));
+    pieces[2] = Player(PlayerType.player2, Location(9, 6));
+    currentBallTurn = null;
   }
 }
