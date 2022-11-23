@@ -49,9 +49,8 @@ class BallPiece extends MgPiece {
 
   @override
   bool canMoveTo(int x, int y, MgPiece? piece) {
-    if (piece != null) {
-      return false;
-    }
+    if (piece != null) return false;
+    if (posesion == false) return false;
     if (((abs(x - this.x) <= 4) && (this.y == y)) ||
         ((abs(y - this.y) <= 4) && (this.x == x)) ||
         ((abs(y - this.y) == abs(x - this.x)) && (abs(x - this.x) <= 4))) {

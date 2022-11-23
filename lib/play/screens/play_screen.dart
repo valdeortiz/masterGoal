@@ -189,7 +189,10 @@ class _BoardWidgetState extends State<BoardWidget> {
         print(" $columna, $fila");
         print("OnWill: $piece");
         return piece.canMoveTo(
-            columna, fila, coordinator.pieceOfTile(columna, fila));
+            columna,
+            fila,
+            coordinator.pieceOfTile(columna, fila),
+            coordinator.onPosesion(columna, fila));
       },
       builder: (context, candidateData, rejectedData) => Container(
         decoration: BoxDecoration(
