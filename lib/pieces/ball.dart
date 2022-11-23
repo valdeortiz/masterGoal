@@ -48,10 +48,12 @@ class BallPiece extends MgPiece {
   String get name => 'ball';
 
   @override
-  bool canMoveTo(int x, int y) {
-    if ((abs(x - this.x) <= 4 && abs(y - this.y) <= 4) ||
-        (y == this.y && abs(this.x - x) <= 4) ||
-        x == this.x && abs(this.y - y) <= 4) {
+  bool canMoveTo(int x, int y, MgPiece? piece, bool posesion) {
+    if (piece != null) return false;
+    if (posesion == false) return false;
+    if (((abs(x - this.x) <= 4) && (this.y == y)) ||
+        ((abs(y - this.y) <= 4) && (this.x == x)) ||
+        ((abs(y - this.y) == abs(x - this.x)) && (abs(x - this.x) <= 4))) {
       return true;
     }
     return false;

@@ -18,6 +18,18 @@ class GameCoordinator {
       pieces.firstWhereOrNull((p) => p.x == x && p.y == y);
   // BallPiece ball = BallPiece(PlayerType.ball, Location(6, 6));
 
+  bool onPosesion(int x, int y) {
+    if (this.pieceOfTile(x + 1, y) != null) return false;
+    if (this.pieceOfTile(x - 1, y) != null) return false;
+    if (this.pieceOfTile(x + 1, y + 1) != null) return false;
+    if (this.pieceOfTile(x + 1, y - 1) != null) return false;
+    if (this.pieceOfTile(x - 1, y + 1) != null) return false;
+    if (this.pieceOfTile(x - 1, y - 1) != null) return false;
+    if (this.pieceOfTile(x, y + 1) != null) return false;
+    if (this.pieceOfTile(x, y - 1) != null) return false;
+    return true;
+  }
+
   factory GameCoordinator.newGame() {
     return GameCoordinator(
       [
