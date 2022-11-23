@@ -60,7 +60,7 @@ class Player extends MgPiece {
   }
 
   @override
-  bool canMoveTo(int x, int y, MgPiece? piece) {
+  bool canMoveTo(int x, int y, MgPiece? piece, bool posesion) {
     // Todo jugador puede moverse= hasta dos casillas en linea recta
     if (piece != null) return false;
     if (((abs(x - this.x) <= 2) && (this.y == y)) ||
