@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mastergoal/clock/providers/coubtdown_provider.dart';
 import 'package:mastergoal/game_coordinator_provider.dart';
 import 'package:mastergoal/menu/pages/menu_screen.dart';
+import 'package:mastergoal/play/screens/final_game.dart';
 import 'package:mastergoal/play/screens/play_screen.dart';
 import 'package:mastergoal/sign_in/pages/login_screen.dart';
 import 'package:mastergoal/sign_in/pages/sign_in_screen.dart';
@@ -59,10 +60,11 @@ class MyApp extends StatelessWidget {
           routes: {
             Login.loginPath: (context) => const Login(),
             SignIn.singInPath: (context) => SignIn(),
-            MenuPrincipal.menuPath: (context) => MenuPrincipal("user"),
+            MenuPrincipal.menuPath: (context) => MenuPrincipal(),
             TutorialScreen.tutorialScreenPath: (context) =>
                 const TutorialScreen(),
             PlayScreen.playScreenPath: (context) => const PlayScreen(),
+            FinalGameScreen.path: (context) => FinalGameScreen(),
           },
         ),
       ),

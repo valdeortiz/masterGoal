@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mastergoal/game_coordinator_provider.dart';
 import 'package:mastergoal/play/screens/play_screen.dart';
 import 'package:mastergoal/tutorial/pages/tutorial_screen.dart';
+import 'package:provider/provider.dart';
 
 class MenuPrincipal extends StatelessWidget {
-  MenuPrincipal(this.userName, {Key? key}) : super(key: key);
+  MenuPrincipal({Key? key}) : super(key: key);
   static const String menuPath = '/menu';
-  final String userName;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,8 @@ class MenuPrincipal extends StatelessWidget {
                       fontWeight: FontWeight.bold),
                   children: [
                     TextSpan(
-                        text: userName,
+                        text:
+                            Provider.of<GameCoordProvider>(context).namePlayer1,
                         style: const TextStyle(
                             color: Color.fromARGB(255, 15, 63, 85),
                             fontFamily: 'Oswald')),

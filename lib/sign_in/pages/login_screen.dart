@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mastergoal/game_coordinator_provider.dart';
+import 'package:provider/provider.dart';
 import '../../menu/pages/menu_screen.dart';
 
 class Login extends StatelessWidget {
@@ -72,11 +74,9 @@ class Login extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 35, vertical: 14),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) =>
-                              MenuPrincipal(userName.text))));
+                  Provider.of<GameCoordProvider>(context).namePlayer1 =
+                      userName.text;
+                  Navigator.pushNamed(context, MenuPrincipal.menuPath);
                 })
           ])),
         ),

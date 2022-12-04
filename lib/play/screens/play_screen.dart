@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mastergoal/clock/providers/coubtdown_provider.dart';
 import 'package:mastergoal/constanst.dart';
-import 'package:mastergoal/game_coordinator.dart';
 import 'package:mastergoal/game_coordinator_provider.dart';
 import 'package:mastergoal/pieces/ball.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
 import 'package:mastergoal/pieces/player.dart';
+import 'package:mastergoal/play/screens/final_game.dart';
 import 'package:mastergoal/widgets/tablero_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -55,7 +55,8 @@ class PlayScreen extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                      "Turno: ${context.select((GameCoordProvider gamePro) => gamePro.currentTurn.name)}")
+                      // "Turno: ${context.select((GameCoordProvider gamePro) => gamePro.currentTurn.name)}")
+                      "Turno: ${context.select((GameCoordProvider gamePro) => gamePro.turnoActual)}")
                 ],
               ),
               Expanded(
@@ -81,13 +82,15 @@ class _BoardWidgetState extends State<BoardWidget> {
   late final double tileWidth =
       MediaQuery.of(context).size.width / Constantes.columnas;
 
-  final GameCoordinator coordinator = GameCoordinator.newGame();
+  // final GameCoordinator coordinator = GameCoordinator.newGame();
+  final coordinator = GameCoordProvider();
 
   List<MgPiece> get pieces => coordinator.pieces;
   @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    coordinator.newGame();
 
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.clockProvider?.startStopTimer());
@@ -101,6 +104,7 @@ class _BoardWidgetState extends State<BoardWidget> {
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     super.dispose();
   }
 
@@ -136,11 +140,15 @@ class _BoardWidgetState extends State<BoardWidget> {
   DragTarget buildDragTarget(int columna, int fila) {
     return DragTarget<MgPiece>(
       onAccept: (piece) {
+        if (widget.clockProvider?.isWin ?? false) {
+          Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
+          return;
+        }
         print("OnAcep: $piece");
         // final move = piece.move();
         // logica del reloj, pongo a 20 seg e inicio
-        widget.clockProvider?.setCountdownDuration(const Duration(seconds: 20));
-        widget.clockProvider?.startStopTimer();
+        // widget.clockProvider?.setCountdownDuration(const Duration(seconds: 20));
+        // widget.clockProvider?.startStopTimer();
         // esta variable verifica si esta habilitado a mover la pelota
         late bool habilitBall;
         // seteamos la nueva posicion de la ficha
