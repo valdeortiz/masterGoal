@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mastergoal/game_coordinator_provider.dart';
 import 'package:mastergoal/menu/pages/menu_screen.dart';
 import 'package:mastergoal/widgets/boton_siguiente.dart';
+import 'package:provider/provider.dart';
 
 class FinalGameScreen extends StatefulWidget {
   static const path = '/final_game';
@@ -14,12 +15,11 @@ class FinalGameScreen extends StatefulWidget {
 
 class _FinalGameScreenState extends State<FinalGameScreen> {
   late ConfettiController _confettiController;
-  late GameCoordProvider gameProv;
 
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    gameProv = GameCoordProvider();
+
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 5));
     super.initState();
@@ -51,7 +51,7 @@ class _FinalGameScreenState extends State<FinalGameScreen> {
                 // animate: true,
               ),
               Text(
-                gameProv.winner(),
+                context.select((GameCoordProvider gamePro) => gamePro.winner()),
                 style: const TextStyle(
                     color: Color(0xFF408ab8),
                     fontSize: 45.0,

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class CountdownProvider extends ChangeNotifier {
-  // Duration duration = const Duration(minutes: 5);
-  Duration duration = const Duration(seconds: 5);
+  Duration duration = const Duration(minutes: 5);
+  // Duration duration = const Duration(seconds: 5);
   bool isRunning = false;
   StreamSubscription<int>? _tickSubscription;
   bool isWin = false;
@@ -12,6 +12,7 @@ class CountdownProvider extends ChangeNotifier {
     if (!isRunning) {
       // _startTimer(duration.inSeconds);
       _startTimer(const Duration(minutes: 5).inSeconds);
+      // _startTimer(const Duration(seconds: 5).inSeconds);
     } else {
       _tickSubscription?.pause();
     }

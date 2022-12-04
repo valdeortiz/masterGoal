@@ -23,7 +23,7 @@ class PlayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clockProvider = Provider.of<CountdownProvider>(context);
-    // final game = Provider.of<GameCoordProvider>(context);
+    final game = Provider.of<GameCoordProvider>(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -62,6 +62,7 @@ class PlayScreen extends StatelessWidget {
               Expanded(
                   child: BoardWidget(
                 clockProvider: clockProvider,
+                gamePro: game,
               )),
             ],
           ),
@@ -72,8 +73,9 @@ class PlayScreen extends StatelessWidget {
 }
 
 class BoardWidget extends StatefulWidget {
-  const BoardWidget({super.key, this.clockProvider});
+  const BoardWidget({super.key, this.clockProvider, this.gamePro});
   final CountdownProvider? clockProvider;
+  final GameCoordProvider? gamePro;
   @override
   State<BoardWidget> createState() => _BoardWidgetState();
 }
@@ -83,21 +85,23 @@ class _BoardWidgetState extends State<BoardWidget> {
       MediaQuery.of(context).size.width / Constantes.columnas;
 
   // final GameCoordinator coordinator = GameCoordinator.newGame();
-  final coordinator = GameCoordProvider();
+  late GameCoordProvider? coordinator;
 
-  List<MgPiece> get pieces => coordinator.pieces;
+  // List<MgPiece> get pieces => coordinator.pieces;
   @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
-    coordinator.newGame();
-
+    coordinator = widget.gamePro;
+    coordinator?.newGame();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.clockProvider?.startStopTimer());
   }
 
   @override
   void didChangeDependencies() {
+    // coordinator = Provider.of<GameCoordProvider>(context, listen: false);
+    // coordinator?.newGame();
     super.didChangeDependencies();
   }
 
@@ -140,10 +144,6 @@ class _BoardWidgetState extends State<BoardWidget> {
   DragTarget buildDragTarget(int columna, int fila) {
     return DragTarget<MgPiece>(
       onAccept: (piece) {
-        if (widget.clockProvider?.isWin ?? false) {
-          Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
-          return;
-        }
         print("OnAcep: $piece");
         // final move = piece.move();
         // logica del reloj, pongo a 20 seg e inicio
@@ -155,7 +155,7 @@ class _BoardWidgetState extends State<BoardWidget> {
         piece.location = Location(columna, fila);
 
         if (piece is BallPiece) {
-          coordinator.currentBallTurn = null;
+          coordinator?.currentBallTurn = null;
           final isGol = piece.isGol(
               Provider.of<GameCoordProvider>(context, listen: false)
                   .currentTurn,
@@ -163,31 +163,38 @@ class _BoardWidgetState extends State<BoardWidget> {
               fila);
           if (isGol) {
             Provider.of<GameCoordProvider>(context, listen: false).setGol();
-            coordinator.restart();
+            coordinator?.restart();
           } else {
             Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
           }
-
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
           return;
         }
         habilitBall = piece is Player
-            ? piece.enableBall(coordinator.pieces[0].location)
+            ? piece.enableBall(coordinator!.pieces[0].location)
             : false;
 
-        coordinator.currentBallTurn = habilitBall ? piece.pieceType : null;
+        coordinator!.currentBallTurn = habilitBall ? piece.pieceType : null;
 
         if (!habilitBall) {
           Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
         }
-
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       },
       onWillAccept: (piece) {
+        if ((widget.clockProvider?.isWin ?? false) ||
+            Provider.of<GameCoordProvider>(context, listen: false).isWin) {
+          Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
+          return false;
+        }
         if (piece == null) {
           return false;
         }
-        if (coordinator.currentBallTurn == null &&
+        if (coordinator!.currentBallTurn == null &&
             Provider.of<GameCoordProvider>(context, listen: false)
                     .currentTurn !=
                 piece.pieceType) {
@@ -199,8 +206,8 @@ class _BoardWidgetState extends State<BoardWidget> {
         return piece.canMoveTo(
             columna,
             fila,
-            coordinator.pieceOfTile(columna, fila),
-            coordinator.onPosesion(columna, fila));
+            coordinator!.pieceOfTile(columna, fila),
+            coordinator!.onPosesion(columna, fila));
       },
       builder: (context, candidateData, rejectedData) => Container(
         decoration: BoxDecoration(
@@ -215,7 +222,7 @@ class _BoardWidgetState extends State<BoardWidget> {
   }
 
   Widget buildTextCell(int x, int y) {
-    final piece = coordinator.pieceOfTile(x, y);
+    final piece = coordinator!.pieceOfTile(x, y);
     if (piece != null) {
       return assetPaint(piece, x, y);
     }

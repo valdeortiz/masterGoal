@@ -9,13 +9,15 @@ class GameCoordProvider extends ChangeNotifier {
   int player2Gols = 0;
   String? namePlayer1;
   String? namePlayer2 = 'PC';
+  int maxGols = 1;
+  bool isWin = false;
 
   PlayerType currentTurn = PlayerType.player1;
   PlayerType? currentBallTurn;
   List<MgPiece> pieces = [
     BallPiece(PlayerType.ball, Location(6, 6)),
-    Player(PlayerType.player1, Location(5, 6)),
-    Player(PlayerType.player2, Location(7, 6)),
+    Player(PlayerType.player1, Location(3, 6)),
+    Player(PlayerType.player2, Location(9, 6)),
   ];
 
   MgPiece? pieceOfTile(int x, int y) =>
@@ -67,10 +69,12 @@ class GameCoordProvider extends ChangeNotifier {
     switch (currentTurn) {
       case PlayerType.player1:
         player1Gols += 1;
+        if (player1Gols >= maxGols) isWin = true;
         currentTurn = PlayerType.player2;
         break;
       case PlayerType.player2:
         player2Gols += 1;
+        if (player2Gols >= maxGols) isWin = true;
         currentTurn = PlayerType.player1;
         break;
       default:
@@ -84,13 +88,14 @@ class GameCoordProvider extends ChangeNotifier {
     player1Gols = 0;
     player2Gols = 0;
     namePlayer2 = 'PC';
+    isWin = false;
     currentTurn = PlayerType.player1;
     currentBallTurn;
     pieces = [
       BallPiece(PlayerType.ball, Location(6, 6)),
-      Player(PlayerType.player1, Location(5, 6)),
-      Player(PlayerType.player2, Location(7, 6)),
+      Player(PlayerType.player1, Location(3, 6)),
+      Player(PlayerType.player2, Location(9, 6)),
     ];
-    notifyListeners();
+    // notifyListeners();
   }
 }
