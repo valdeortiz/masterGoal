@@ -90,12 +90,12 @@ class _BoardWidgetState extends State<BoardWidget> {
   // List<MgPiece> get pieces => coordinator.pieces;
   @override
   void initState() {
-    super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
     coordinator = widget.gamePro;
     coordinator?.newGame();
     WidgetsBinding.instance
         .addPostFrameCallback((_) => widget.clockProvider?.startStopTimer());
+    super.initState();
   }
 
   @override
@@ -108,7 +108,8 @@ class _BoardWidgetState extends State<BoardWidget> {
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
+    widget.clockProvider?.cancelTimer();
+    coordinator?.newGame();
     super.dispose();
   }
 

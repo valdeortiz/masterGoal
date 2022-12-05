@@ -37,6 +37,12 @@ class CountdownProvider extends ChangeNotifier {
     });
   }
 
+  void cancelTimer() {
+    _tickSubscription?.cancel();
+    isRunning = false;
+    isWin = false;
+  }
+
   void setCountdownDuration(Duration newDuration) {
     duration = newDuration;
     _tickSubscription?.cancel();
