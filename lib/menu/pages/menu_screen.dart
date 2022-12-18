@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mastergoal/game_coordinator_provider.dart';
+import 'package:mastergoal/menu/pages/config_screen.dart';
 import 'package:mastergoal/play/screens/play_screen.dart';
 import 'package:mastergoal/tutorial/pages/tutorial_screen.dart';
 import 'package:provider/provider.dart';
@@ -125,7 +126,10 @@ class MenuPrincipal extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(ConfiguracionScreen.path);
+                },
               ),
             ),
             const SizedBox(

@@ -7,7 +7,6 @@ import 'package:mastergoal/game_coordinator_provider.dart';
 import 'package:mastergoal/pieces/ball.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
 import 'package:mastergoal/pieces/player.dart';
-import 'package:mastergoal/play/screens/final_game.dart';
 import 'package:mastergoal/widgets/generic_dialog.dart';
 import 'package:mastergoal/widgets/tablero_widget.dart';
 import 'package:provider/provider.dart';
@@ -141,6 +140,14 @@ class PlayScreen extends StatelessWidget {
                                           ? const Text("Activar audio")
                                           : const Text("Desactivar audio"),
                                     ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        // Navigator.of(context).repl
+                                        Navigator.of(context).pop();
+                                      },
+                                      child:
+                                          const Text("Volver a menu principal"),
+                                    ),
                                   ],
                                 ),
                               ));
@@ -213,84 +220,49 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(
-          height: 10,
-        ),
-        ...List.generate(
-          Constantes.filas,
-          (fila) => Expanded(
-            child: Row(
-              children: [
-                ...List.generate(
-                  Constantes.columnas,
-                  (columna) => Expanded(
-                    child: buildDragTarget(columna, fila),
-                  ),
-                )
-              ],
+    return Container(
+      margin: const EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ...List.generate(
+            Constantes.filas,
+            (fila) => Expanded(
+              child: Row(
+                children: [
+                  ...List.generate(
+                    Constantes.columnas,
+                    (columna) => Expanded(
+                      child: buildDragTarget(columna, fila),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-        const SizedBox(
-          height: 20,
-        )
-      ],
+        ],
+      ),
     );
   }
 
   DragTarget buildDragTarget(int columna, int fila) {
     return DragTarget<MgPiece>(
       onAccept: (piece) {
-        print("OnAcep: $piece");
-        // final move = piece.move();
-        // logica del reloj, pongo a 20 seg e inicio
-        // widget.clockProvider?.setCountdownDuration(const Duration(seconds: 20));
-        // widget.clockProvider?.startStopTimer();
-        // esta variable verifica si esta habilitado a mover la pelota
-        late bool habilitBall;
-        // seteamos la nueva posicion de la ficha
-        piece.location = Location(columna, fila);
-
-        if (piece is BallPiece) {
-          coordinator?.currentBallTurn = null;
-          final isGol = piece.isGol(
-              Provider.of<GameCoordProvider>(context, listen: false)
-                  .currentTurn,
-              columna,
-              fila);
-          if (isGol) {
-            Provider.of<GameCoordProvider>(context, listen: false).setGol();
-            coordinator?.restart();
-          } else {
-            Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
-          }
-          if (mounted) {
-            setState(() {});
-          }
-          return;
-        }
-        habilitBall = piece is Player
-            ? piece.enableBall(coordinator!.pieces[0].location)
-            : false;
-
-        coordinator!.currentBallTurn = habilitBall ? piece.pieceType : null;
-
-        if (!habilitBall) {
-          Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
-        }
-        if (mounted) {
-          setState(() {});
-        }
+        onAcept(piece, columna, fila);
+        // En caso de jugar, jugador vs jugador comentar el future
       },
       onWillAccept: (piece) {
-        if ((widget.clockProvider?.isWin ?? false) ||
-            Provider.of<GameCoordProvider>(context, listen: false).isWin) {
-          Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
+        // if ((widget.clockProvider?.isWin ?? false) ||
+        //     Provider.of<GameCoordProvider>(context, listen: false).isWin) {
+        //   Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
+        //   return false;
+        // }
+        if (piece == null) {
           return false;
         }
-        if (piece == null) {
+        if (piece.name == PlayerType.player2.name) {
+          // Esperamos a que la pc juegue
           return false;
         }
         if (coordinator!.currentBallTurn == null &&
@@ -309,6 +281,7 @@ class _BoardWidgetState extends State<BoardWidget> {
             coordinator!.onPosesion(columna, fila));
       },
       builder: (context, candidateData, rejectedData) => Container(
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: Colors.lightGreen[700],
           border: buildBorder(columna, fila),
@@ -318,6 +291,91 @@ class _BoardWidgetState extends State<BoardWidget> {
         child: buildTextCell(columna, fila),
       ),
     );
+  }
+
+  List moverPC() {
+    // En caso de que el jugador quede cerca de la pelota, colocar un future con el movimiento de la pelota
+
+    return [7, 6];
+  }
+
+  List moverPelota() {
+    return [4, 2];
+  }
+
+  onAcept(MgPiece piece, columna, fila) {
+    late bool habilitBall;
+    // seteamos la nueva posicion de la ficha
+    piece.location = Location(columna, fila);
+
+    if (piece is BallPiece) {
+      coordinator?.currentBallTurn = null;
+      final isGol = piece.isGol(
+          Provider.of<GameCoordProvider>(context, listen: false).currentTurn,
+          columna,
+          fila);
+      if (isGol) {
+        Provider.of<GameCoordProvider>(context, listen: false).setGol();
+        coordinator?.restart();
+      } else {
+        Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
+        if (coordinator!.gameType == GameType.pc) {
+          Future.delayed(const Duration(seconds: 2), () {
+            final data = moverPC();
+            onAcept(
+              Provider.of<GameCoordProvider>(context, listen: false).pieces[2],
+              data[0],
+              data[1],
+            );
+          });
+        }
+      }
+      if (mounted) {
+        setState(() {});
+      }
+      return;
+    }
+    habilitBall = piece is Player
+        ? piece.enableBall(coordinator!.pieces[0].location)
+        : false;
+
+    coordinator!.currentBallTurn = habilitBall ? piece.pieceType : null;
+
+    if (!habilitBall) {
+      Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
+      // Si es modo de juego contra la pc, y el turno era del player 1
+      // Mandamos a jugar a la maquina al camviar el turno
+      if (coordinator!.gameType == GameType.pc &&
+          piece.pieceType == PlayerType.player1) {
+        Future.delayed(const Duration(seconds: 2), () {
+          final data = moverPC();
+          onAcept(
+            Provider.of<GameCoordProvider>(context, listen: false).pieces[2],
+            data[0],
+            data[1],
+          );
+        });
+      }
+    }
+
+    // verificamos que el tipo de juego sea contra pc, que tenga habilitado la pelota y el jugador sea 2
+    // en caso de que sea TRUE todas, se juega automatico simulando una pc
+    if (coordinator!.gameType == GameType.pc &&
+        habilitBall &&
+        piece.pieceType == PlayerType.player2) {
+      final data = moverPelota();
+      Future.delayed(
+          const Duration(seconds: 1),
+          () => onAcept(
+                Provider.of<GameCoordProvider>(context, listen: false)
+                    .pieces[0],
+                data[0],
+                data[1],
+              ));
+    }
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Widget buildTextCell(int x, int y) {

@@ -4,7 +4,7 @@ import 'package:mastergoal/values/dimensiones_app.dart';
 
 TextStyle get textBase => TextStyle(
       color: textColor1,
-      fontFamily: "Teko",
+      fontFamily: "NovaRound",
     );
 
 TextStyle get subtitle1 =>

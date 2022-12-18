@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mastergoal/audio.dart';
 import 'package:mastergoal/clock/providers/coubtdown_provider.dart';
 import 'package:mastergoal/game_coordinator_provider.dart';
+import 'package:mastergoal/menu/pages/config_screen.dart';
 import 'package:mastergoal/menu/pages/menu_screen.dart';
 import 'package:mastergoal/play/screens/final_game.dart';
 import 'package:mastergoal/play/screens/play_screen.dart';
@@ -69,6 +70,7 @@ class MyApp extends StatelessWidget {
                 const TutorialScreen(),
             PlayScreen.playScreenPath: (context) => const PlayScreen(),
             FinalGameScreen.path: (context) => FinalGameScreen(),
+            ConfiguracionScreen.path: (context) => const ConfiguracionScreen(),
           },
         ),
       ),

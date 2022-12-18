@@ -4,6 +4,8 @@ import 'package:mastergoal/pieces/mg_pieces.dart';
 import 'package:mastergoal/pieces/player.dart';
 import 'package:collection/collection.dart';
 
+enum GameType { pc, jugador }
+
 class GameCoordProvider extends ChangeNotifier {
   int player1Gols = 0;
   int player2Gols = 0;
@@ -11,6 +13,7 @@ class GameCoordProvider extends ChangeNotifier {
   String? namePlayer2 = 'PC';
   int maxGols = 1;
   bool isWin = false;
+  GameType gameType = GameType.pc;
 
   PlayerType currentTurn = PlayerType.player1;
   PlayerType? currentBallTurn;

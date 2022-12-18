@@ -21,8 +21,9 @@ class TableroPuntuacion extends StatelessWidget {
                 padding: const EdgeInsets.all(5.0),
                 decoration: const BoxDecoration(color: Colors.blueAccent),
                 alignment: Alignment.center,
+                width: 100,
                 child: Text(
-                  "Home",
+                  "Jugador",
                   textAlign: TextAlign.center,
                   style: _style,
                 ),
@@ -75,10 +76,10 @@ class TableroPuntuacion extends StatelessWidget {
                 padding: const EdgeInsets.all(5.0),
                 decoration: const BoxDecoration(color: Colors.blueAccent),
                 // height: sizeScreen,
-                // width: sizeScreen,
+                width: 100,
                 alignment: Alignment.center,
                 child: Text(
-                  "Away",
+                  "PC",
                   textAlign: TextAlign.center,
                   style: _style,
                 ),
