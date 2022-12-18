@@ -48,8 +48,10 @@ class CountdownProvider extends ChangeNotifier {
 
   void cancelTimer() {
     _tickSubscription?.cancel();
+    duration = const Duration(minutes: 5);
     isRunning = false;
     isWin = false;
+    _modifyDuration = true;
   }
 
   void setCountdownDuration(Duration newDuration) {

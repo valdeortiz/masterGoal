@@ -127,8 +127,7 @@ class MenuPrincipal extends StatelessWidget {
                       color: Colors.white),
                 ),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacementNamed(ConfiguracionScreen.path);
+                  Navigator.of(context).pushNamed(ConfiguracionScreen.path);
                 },
               ),
             ),

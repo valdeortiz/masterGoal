@@ -281,10 +281,14 @@ class _BoardWidgetState extends State<BoardWidget> {
             coordinator!.onPosesion(columna, fila));
       },
       builder: (context, candidateData, rejectedData) => Container(
-        alignment: Alignment.center,
+        // alignment: Alignment.center,
         decoration: BoxDecoration(
           color: Colors.lightGreen[700],
           border: buildBorder(columna, fila),
+          // borderRadius: columna == (Constantes.columnas / 2) - 1 &&
+          //         fila == (Constantes.filas / 2) - 1
+          //     ? const BorderRadius.all(Radius.circular(20))
+          //     : null,
         ),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -432,6 +436,13 @@ class _BoardWidgetState extends State<BoardWidget> {
     const int areaChica = 2;
     const int yAreaGrande = 1;
     const int yAreaChica = 3;
+
+    if (x == (Constantes.columnas - 1) / 2 && y == (Constantes.filas - 1) / 2) {
+      return Border.all(
+        color: Colors.white,
+        width: 1.5,
+      );
+    }
 
     if (x == Constantes.columnas - 1 && y == Constantes.columnas - 1) {
       return const Border(

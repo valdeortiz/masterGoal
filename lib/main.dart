@@ -61,7 +61,8 @@ class MyApp extends StatelessWidget {
           ),
 
           // initialRoute: Login.loginPath,
-          initialRoute: PlayScreen.playScreenPath,
+          // initialRoute: PlayScreen.playScreenPath,
+          initialRoute: MenuPrincipal.menuPath,
           routes: {
             Login.loginPath: (context) => const Login(),
             SignIn.singInPath: (context) => SignIn(),
