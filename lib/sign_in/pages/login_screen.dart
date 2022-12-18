@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mastergoal/game_coordinator_provider.dart';
-import 'package:provider/provider.dart';
 import '../../menu/pages/menu_screen.dart';
 
 class Login extends StatelessWidget {
@@ -18,7 +16,7 @@ class Login extends StatelessWidget {
               image: DecorationImage(
                   image: AssetImage("assets/madera.jpg"), fit: BoxFit.cover)),
           child: Center(
-              child: Column(children: <Widget>[
+              child: ListView(children: <Widget>[
             //Container del Gif
             Container(
                 child: Lottie.asset('assets/lottie/sign-in.json',
@@ -74,8 +72,8 @@ class Login extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 35, vertical: 14),
                 ),
                 onPressed: () {
-                  Provider.of<GameCoordProvider>(context).namePlayer1 =
-                      userName.text;
+                  // Provider.of<GameCoordProvider>(context).namePlayer1 =
+                  //     userName.text;
                   Navigator.pushNamed(context, MenuPrincipal.menuPath);
                 })
           ])),

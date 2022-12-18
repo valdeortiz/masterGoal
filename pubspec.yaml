@@ -37,6 +37,7 @@ dependencies:
   showcaseview: ^1.1.8
   sizer: ^2.0.15
   confetti: ^0.7.0
+  audioplayers: ^1.1.1
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to

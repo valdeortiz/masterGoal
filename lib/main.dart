@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mastergoal/audio.dart';
 import 'package:mastergoal/clock/providers/coubtdown_provider.dart';
 import 'package:mastergoal/game_coordinator_provider.dart';
 import 'package:mastergoal/menu/pages/menu_screen.dart';
@@ -37,6 +38,9 @@ class MyApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (_) => GameCoordProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => AudioProvider(),
           ),
         ],
         child: MaterialApp(

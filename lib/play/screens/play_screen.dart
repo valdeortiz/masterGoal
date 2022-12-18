@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mastergoal/audio.dart';
 import 'package:mastergoal/clock/providers/coubtdown_provider.dart';
 import 'package:mastergoal/constanst.dart';
 import 'package:mastergoal/game_coordinator_provider.dart';
@@ -7,6 +8,7 @@ import 'package:mastergoal/pieces/ball.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
 import 'package:mastergoal/pieces/player.dart';
 import 'package:mastergoal/play/screens/final_game.dart';
+import 'package:mastergoal/widgets/generic_dialog.dart';
 import 'package:mastergoal/widgets/tablero_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +26,7 @@ class PlayScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final clockProvider = Provider.of<CountdownProvider>(context);
     final game = Provider.of<GameCoordProvider>(context);
+    final audio = Provider.of<AudioProvider>(context);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -55,14 +58,105 @@ class PlayScreen extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                      // "Turno: ${context.select((GameCoordProvider gamePro) => gamePro.currentTurn.name)}")
-                      "Turno: ${context.select((GameCoordProvider gamePro) => gamePro.turnoActual)}")
+                    // "Turno: ${context.select((GameCoordProvider gamePro) => gamePro.currentTurn.name)}")
+                    "Turno: ${context.select((GameCoordProvider gamePro) => gamePro.turnoActual)}",
+                  ),
+                  const Expanded(child: SizedBox()),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, right: 40),
+                    child: IconButton(
+                        onPressed: () {
+                          audio.playPause();
+                        },
+                        icon: Icon(
+                          !context.select(
+                                  (AudioProvider audiop) => audiop.isPlay)
+                              ? Icons.play_circle_outline
+                              : Icons.pause_circle_outlined,
+                          size: 40,
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, right: 40),
+                    child: IconButton(
+                        onPressed: () {
+                          // bool modifyMinute = false;
+                          clockProvider.startStopTimer();
+                          GenericDialog dialog = GenericDialog(
+                            onPressed: () {},
+                            onReject: () {
+                              clockProvider.startStopTimer();
+                              Navigator.of(context).pop();
+                            },
+                            titulo: "Pausa",
+                            iosv: 2,
+                            oneButton: true,
+                          );
+
+                          dialog.show(
+                              context,
+                              Builder(
+                                builder: (context) => Column(
+                                  children: [
+                                    const Text(
+                                      "Selecciona el tiempo",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            clockProvider.setCountdownDuration(
+                                                const Duration(minutes: 10));
+                                          },
+                                          child: const Text("10 min"),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            clockProvider.setCountdownDuration(
+                                                const Duration(minutes: 15));
+                                          },
+                                          child: const Text("15 min"),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            clockProvider.setCountdownDuration(
+                                                const Duration(minutes: 20));
+                                          },
+                                          child: const Text("20 min"),
+                                        ),
+                                      ],
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        audio.stop();
+                                      },
+                                      child: context.select(
+                                              (AudioProvider audiop) =>
+                                                  audiop.isStop)
+                                          ? const Text("Activar audio")
+                                          : const Text("Desactivar audio"),
+                                    ),
+                                  ],
+                                ),
+                              ));
+                        },
+                        icon: const Icon(
+                          Icons.menu_open_outlined,
+                          size: 40,
+                        )),
+                  )
                 ],
               ),
               Expanded(
                   child: BoardWidget(
                 clockProvider: clockProvider,
                 gamePro: game,
+                audioPro: audio,
               )),
             ],
           ),
@@ -73,9 +167,11 @@ class PlayScreen extends StatelessWidget {
 }
 
 class BoardWidget extends StatefulWidget {
-  const BoardWidget({super.key, this.clockProvider, this.gamePro});
+  const BoardWidget(
+      {super.key, this.clockProvider, this.gamePro, this.audioPro});
   final CountdownProvider? clockProvider;
   final GameCoordProvider? gamePro;
+  final AudioProvider? audioPro;
   @override
   State<BoardWidget> createState() => _BoardWidgetState();
 }
@@ -91,6 +187,7 @@ class _BoardWidgetState extends State<BoardWidget> {
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    widget.audioPro?.iniciarAudio();
     coordinator = widget.gamePro;
     coordinator?.newGame();
     WidgetsBinding.instance
@@ -110,6 +207,7 @@ class _BoardWidgetState extends State<BoardWidget> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     widget.clockProvider?.cancelTimer();
     coordinator?.newGame();
+    widget.audioPro?.stop();
     super.dispose();
   }
 

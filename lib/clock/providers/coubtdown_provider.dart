@@ -8,10 +8,15 @@ class CountdownProvider extends ChangeNotifier {
   bool isRunning = false;
   StreamSubscription<int>? _tickSubscription;
   bool isWin = false;
+  bool _modifyDuration = true;
   void startStopTimer() {
     if (!isRunning) {
-      // _startTimer(duration.inSeconds);
-      _startTimer(const Duration(minutes: 5).inSeconds);
+      if (_modifyDuration) {
+        _startTimer(duration.inSeconds);
+      } else {
+        _tickSubscription?.resume();
+      }
+      // _startTimer(const Duration(minutes: 5).inSeconds);
       // _startTimer(const Duration(seconds: 5).inSeconds);
     } else {
       _tickSubscription?.pause();
@@ -21,7 +26,11 @@ class CountdownProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // void pauseSub() => _tickSubscription?.pause();
+  // void resumeSub() => _tickSubscription?.resume();
+
   void _startTimer(int seconds) {
+    _modifyDuration = false;
     _tickSubscription?.cancel();
     _tickSubscription = Stream<int>.periodic(
             const Duration(seconds: 1), (val) => seconds - val - 1)
@@ -47,6 +56,7 @@ class CountdownProvider extends ChangeNotifier {
     duration = newDuration;
     _tickSubscription?.cancel();
     isRunning = false;
+    _modifyDuration = true;
     notifyListeners();
   }
 
