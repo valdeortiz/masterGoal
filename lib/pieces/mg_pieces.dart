@@ -8,7 +8,11 @@ class Location {
 
   Location(this.x, this.y);
 
-  bool get isValid => x <= Constantes.filas - 1 && y <= Constantes.columnas - 1;
+  bool get isValid =>
+      x <= Constantes.filas - 1 &&
+      y <= Constantes.columnas - 1 &&
+      x >= 0 &&
+      y >= 0;
 
   @override
   int get hashCode => x.hashCode ^ y.hashCode;
@@ -37,13 +41,16 @@ abstract class MgPiece {
   MgPiece(
     this.pieceType,
     this.location,
+    this.movesPosible,
   );
 
   List<Location> moves(List<MgPiece> others);
+  List<Location> movesPosible;
 
   // bool canMoveTo(int x, int y, List<MgPiece> others) =>
   //     moves(others).contains(Location(x, y));
-  bool canMoveTo(int x, int y, MgPiece? piece, bool posesion);
+  bool canMoveTo(int x, int y) => movesPosible.contains(Location(x, y));
+  // bool canMoveTo(int x, int y, MgPiece? piece, bool posesion);
   @override
   String toString() => "$name($x, $y)";
 }

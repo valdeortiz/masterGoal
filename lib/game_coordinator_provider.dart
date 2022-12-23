@@ -17,10 +17,27 @@ class GameCoordProvider extends ChangeNotifier {
 
   PlayerType currentTurn = PlayerType.player1;
   PlayerType? currentBallTurn;
+  // List<MgPiece> moveInicial = [
+  //   BallPiece(PlayerType.ball, Location(6, 6),
+  //       [Location(6, 6), Location(5, 6), Location(4, 6)]),
+  //   Player(PlayerType.player1, Location(3, 6),
+  //       [Location(3, 6), Location(4, 6), Location(5, 6)]),
+  //   Player(PlayerType.player2, Location(9, 6),
+  //       [Location(9, 6), Location(10, 6), Location(11, 6)]),
+  // ];
+  final ballInicial = BallPiece(PlayerType.ball, Location(6, 6),
+      [Location(6, 6), Location(5, 6), Location(3, 6)]);
+  final player1Inicial = Player(PlayerType.player1, Location(3, 6),
+      [Location(3, 6), Location(4, 6), Location(5, 6)]);
+  final player2Inicial = Player(PlayerType.player2, Location(9, 6),
+      [Location(9, 6), Location(10, 6), Location(11, 6)]);
   List<MgPiece> pieces = [
-    BallPiece(PlayerType.ball, Location(6, 6)),
-    Player(PlayerType.player1, Location(3, 6)),
-    Player(PlayerType.player2, Location(9, 6)),
+    BallPiece(PlayerType.ball, Location(6, 6),
+        [Location(6, 6), Location(5, 6), Location(3, 6)]),
+    Player(PlayerType.player1, Location(3, 6),
+        [Location(3, 6), Location(4, 6), Location(5, 6)]),
+    Player(PlayerType.player2, Location(9, 6),
+        [Location(9, 6), Location(10, 6), Location(11, 6)]),
   ];
 
   MgPiece? pieceOfTile(int x, int y) =>
@@ -56,9 +73,9 @@ class GameCoordProvider extends ChangeNotifier {
   }
 
   void restart() {
-    pieces[0] = BallPiece(PlayerType.ball, Location(6, 6));
-    pieces[1] = Player(PlayerType.player1, Location(3, 6));
-    pieces[2] = Player(PlayerType.player2, Location(9, 6));
+    pieces[0] = ballInicial;
+    pieces[1] = player1Inicial;
+    pieces[2] = player2Inicial;
     currentBallTurn = null;
   }
 
@@ -95,9 +112,9 @@ class GameCoordProvider extends ChangeNotifier {
     currentTurn = PlayerType.player1;
     currentBallTurn;
     pieces = [
-      BallPiece(PlayerType.ball, Location(6, 6)),
-      Player(PlayerType.player1, Location(3, 6)),
-      Player(PlayerType.player2, Location(9, 6)),
+      ballInicial,
+      player1Inicial,
+      player2Inicial,
     ];
     // notifyListeners();
   }

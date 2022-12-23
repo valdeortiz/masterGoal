@@ -247,43 +247,49 @@ class _BoardWidgetState extends State<BoardWidget> {
   }
 
   DragTarget buildDragTarget(int columna, int fila) {
-    return DragTarget<MgPiece>(
-      onAccept: (piece) {
-        onAcept(piece, columna, fila);
-        // En caso de jugar, jugador vs jugador comentar el future
-      },
-      onWillAccept: (piece) {
-        // if ((widget.clockProvider?.isWin ?? false) ||
-        //     Provider.of<GameCoordProvider>(context, listen: false).isWin) {
-        //   Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
-        //   return false;
-        // }
-        if (piece == null) {
-          return false;
-        }
-        if (piece.name == PlayerType.player2.name) {
-          // Esperamos a que la pc juegue
-          return false;
-        }
-        if (coordinator!.currentBallTurn == null &&
-            Provider.of<GameCoordProvider>(context, listen: false)
-                    .currentTurn !=
-                piece.pieceType) {
-          return false;
-        }
+    return DragTarget<MgPiece>(onAccept: (piece) {
+      onAcept(piece, columna, fila);
+      // En caso de jugar, jugador vs jugador comentar el future
+    }, onWillAccept: (piece) {
+      // if ((widget.clockProvider?.isWin ?? false) ||
+      //     Provider.of<GameCoordProvider>(context, listen: false).isWin) {
+      //   Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
+      //   return false;
+      // }
+      if (piece == null) {
+        return false;
+      }
+      if (piece.name == PlayerType.player2.name) {
+        // Esperamos a que la pc juegue
+        return false;
+      }
+      if (coordinator!.currentBallTurn == null &&
+          Provider.of<GameCoordProvider>(context, listen: false).currentTurn !=
+              piece.pieceType) {
+        return false;
+      }
 
-        print(" $columna, $fila");
-        print("OnWill: $piece");
-        return piece.canMoveTo(
-            columna,
-            fila,
-            coordinator!.pieceOfTile(columna, fila),
-            coordinator!.onPosesion(columna, fila));
-      },
-      builder: (context, candidateData, rejectedData) => Container(
+      print(" $columna, $fila");
+      print("OnWill: $piece");
+
+      return piece.canMoveTo(columna, fila);
+      // coordinator!.pieceOfTile(columna, fila),
+      // coordinator!.onPosesion(columna, fila));
+    }, builder: (context, candidateData, rejectedData) {
+      // print("candidate $candidateData, rejec: $rejectedData");
+      // final piece = coordinator!.pieceOfTile(x, y);
+      late bool pieceMove;
+      if (candidateData.isNotEmpty) {
+        pieceMove = candidateData[0]
+                ?.canMoveTo(candidateData[0]!.x, candidateData[0]!.y) ??
+            false;
+      } else {
+        pieceMove = false;
+      }
+      return Container(
         // alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.lightGreen[700],
+          color: pieceMove ? Colors.lightGreen : Colors.lightGreen[700],
           border: buildBorder(columna, fila),
           // borderRadius: columna == (Constantes.columnas / 2) - 1 &&
           //         fila == (Constantes.filas / 2) - 1
@@ -293,8 +299,8 @@ class _BoardWidgetState extends State<BoardWidget> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: buildTextCell(columna, fila),
-      ),
-    );
+      );
+    });
   }
 
   List moverPC() {
@@ -311,6 +317,8 @@ class _BoardWidgetState extends State<BoardWidget> {
     late bool habilitBall;
     // seteamos la nueva posicion de la ficha
     piece.location = Location(columna, fila);
+    piece.movesPosible = piece
+        .moves(Provider.of<GameCoordProvider>(context, listen: false).pieces);
 
     if (piece is BallPiece) {
       coordinator?.currentBallTurn = null;
@@ -323,7 +331,10 @@ class _BoardWidgetState extends State<BoardWidget> {
         coordinator?.restart();
       } else {
         Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
-        if (coordinator!.gameType == GameType.pc) {
+        if (coordinator!.gameType == GameType.pc &&
+            Provider.of<GameCoordProvider>(context, listen: false)
+                    .currentTurn ==
+                PlayerType.player2) {
           Future.delayed(const Duration(seconds: 2), () {
             final data = moverPC();
             onAcept(
