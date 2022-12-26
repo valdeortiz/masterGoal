@@ -130,7 +130,7 @@ class GameCoordProvider extends ChangeNotifier {
       player1Inicial,
       player2Inicial,
     ];
-    // notifyListeners();
+    notifyListeners();
   }
 
   changeModeType() {

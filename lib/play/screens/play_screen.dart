@@ -144,6 +144,13 @@ class PlayScreen extends StatelessWidget {
                                     ),
                                     ElevatedButton(
                                       onPressed: () {
+                                        game.newGame();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Reiniciar juego"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
                                         // Navigator.of(context).repl
                                         Navigator.of(context).pop();
                                       },
@@ -198,9 +205,10 @@ class _BoardWidgetState extends State<BoardWidget> {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
     widget.audioPro?.iniciarAudio();
     coordinator = widget.gamePro;
-    coordinator?.newGame();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => widget.clockProvider?.startStopTimer());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.clockProvider?.startStopTimer();
+      coordinator?.newGame();
+    });
     super.initState();
   }
 
@@ -281,7 +289,8 @@ class _BoardWidgetState extends State<BoardWidget> {
       if (piece == null) {
         return false;
       }
-      if (piece.name == PlayerType.player2.name) {
+      if (piece.name == PlayerType.player2.name &&
+          coordinator!.gameType == GameType.pc) {
         // Esperamos a que la pc juegue
         return false;
       }
@@ -330,8 +339,8 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   Location moverPC() {
     // En caso de que el jugador quede cerca de la pelota, colocar un future con el movimiento de la pelota
-    // coordinator!.pieces[2].movesPosible =
-    //     coordinator!.pieces[2].moves(coordinator!.pieces);
+    coordinator!.pieces[2].movesPosible =
+        coordinator!.pieces[2].moves(coordinator!.pieces);
     final randon = Random();
     return coordinator!.pieces[2].movesPosible[
         randon.nextInt(coordinator!.pieces[2].movesPosible.length)];
@@ -343,6 +352,8 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   onAcept(MgPiece piece, columna, fila) {
     late bool habilitBall;
+    coordinator?.pieces[1].movesPosible = coordinator!.pieces[1]
+        .moves(Provider.of<GameCoordProvider>(context, listen: false).pieces);
     // seteamos la nueva posicion de la ficha
     piece.location = Location(columna, fila);
     piece.movesPosible = piece
