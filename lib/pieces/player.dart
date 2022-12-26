@@ -84,13 +84,13 @@ class Player extends MgPiece {
 
       final destination = Location(x + i, y);
 
-      final pieceOnLocation =
-          pieces.any((piece) => piece.location == destination);
+      // final pieceOnLocation =
+      //     pieces.any((piece) => piece.location == destination);
 
-      if (pieceOnLocation && location != destination) {
-        obstructed = true;
-        return null;
-      }
+      // if (pieceOnLocation && location != destination) {
+      //   obstructed = true;
+      //   return null;
+      // }
 
       return destination;
     }).whereType<Location>().where((location) => location.isValid).toList();

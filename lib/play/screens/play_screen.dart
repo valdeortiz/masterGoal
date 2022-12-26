@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mastergoal/audio.dart';
@@ -213,35 +215,55 @@ class _BoardWidgetState extends State<BoardWidget> {
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     widget.clockProvider?.cancelTimer();
-    coordinator?.newGame();
+    // coordinator?.newGame();
+    // Provider.of<GameCoordProvider>(context, listen: false).newGame();
     widget.audioPro?.stop();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ...List.generate(
-            Constantes.filas,
-            (fila) => Expanded(
-              child: Row(
-                children: [
-                  ...List.generate(
-                    Constantes.columnas,
-                    (columna) => Expanded(
-                      child: buildDragTarget(columna, fila),
-                    ),
-                  )
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        bool isExit = false;
+        GenericDialog d = GenericDialog(onPressed: () {
+          isExit = true;
+          Provider.of<GameCoordProvider>(context, listen: false).newGame();
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+        }, onReject: () {
+          Navigator.of(context).pop();
+        });
+        d.show(
+            context,
+            Column(
+              children: const [Text("Desea salir y resetear la partida")],
+            ));
+        return !isExit;
+      },
+      child: Container(
+        margin: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ...List.generate(
+              Constantes.filas,
+              (fila) => Expanded(
+                child: Row(
+                  children: [
+                    ...List.generate(
+                      Constantes.columnas,
+                      (columna) => Expanded(
+                        child: buildDragTarget(columna, fila),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -272,7 +294,9 @@ class _BoardWidgetState extends State<BoardWidget> {
       print(" $columna, $fila");
       print("OnWill: $piece");
 
-      return piece.canMoveTo(columna, fila);
+      return piece.canMoveTo(columna, fila) &&
+          !coordinator!.pieces
+              .any((piece) => piece.location == Location(columna, fila));
       // coordinator!.pieceOfTile(columna, fila),
       // coordinator!.onPosesion(columna, fila));
     }, builder: (context, candidateData, rejectedData) {
@@ -286,6 +310,7 @@ class _BoardWidgetState extends State<BoardWidget> {
       } else {
         pieceMove = false;
       }
+      // print(pieceMove);
       return Container(
         // alignment: Alignment.center,
         decoration: BoxDecoration(
@@ -303,10 +328,13 @@ class _BoardWidgetState extends State<BoardWidget> {
     });
   }
 
-  List moverPC() {
+  Location moverPC() {
     // En caso de que el jugador quede cerca de la pelota, colocar un future con el movimiento de la pelota
-
-    return [7, 6];
+    // coordinator!.pieces[2].movesPosible =
+    //     coordinator!.pieces[2].moves(coordinator!.pieces);
+    final randon = Random();
+    return coordinator!.pieces[2].movesPosible[
+        randon.nextInt(coordinator!.pieces[2].movesPosible.length)];
   }
 
   List moverPelota() {
@@ -339,8 +367,8 @@ class _BoardWidgetState extends State<BoardWidget> {
             final data = moverPC();
             onAcept(
               Provider.of<GameCoordProvider>(context, listen: false).pieces[2],
-              data[0],
-              data[1],
+              data.x,
+              data.y,
             );
           });
         }
@@ -366,8 +394,8 @@ class _BoardWidgetState extends State<BoardWidget> {
           final data = moverPC();
           onAcept(
             Provider.of<GameCoordProvider>(context, listen: false).pieces[2],
-            data[0],
-            data[1],
+            data.x,
+            data.y,
           );
         });
       }

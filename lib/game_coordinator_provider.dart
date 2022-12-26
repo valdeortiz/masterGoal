@@ -25,15 +25,29 @@ class GameCoordProvider extends ChangeNotifier {
   //   Player(PlayerType.player2, Location(9, 6),
   //       [Location(9, 6), Location(10, 6), Location(11, 6)]),
   // ];
-  final ballInicial = BallPiece(PlayerType.ball, Location(6, 6),
-      [Location(6, 6), Location(5, 6), Location(3, 6)]);
+  // [Location(6, 5), Location(6, 7), Location(7, 6), Location(5, 6), Location(5, 6)];
+  final ballInicial = BallPiece(PlayerType.ball, Location(6, 6), [
+    // movimiento de horizontal
+    Location(6, 2), Location(6, 3), Location(6, 4), Location(6, 5),
+    Location(6, 7), Location(6, 8), Location(6, 9), Location(6, 10),
+    // movimiento vertical
+    Location(2, 6), Location(3, 6), Location(4, 6), Location(5, 6),
+    Location(7, 6), Location(8, 6), Location(9, 6), Location(10, 6),
+  ]);
   final player1Inicial = Player(PlayerType.player1, Location(3, 6),
-      [Location(3, 6), Location(4, 6), Location(5, 6)]);
+      [Location(7, 6), Location(4, 6), Location(5, 6)]);
   final player2Inicial = Player(PlayerType.player2, Location(9, 6),
-      [Location(9, 6), Location(10, 6), Location(11, 6)]);
+      [Location(12, 6), Location(10, 6), Location(11, 6)]);
+
   List<MgPiece> pieces = [
-    BallPiece(PlayerType.ball, Location(6, 6),
-        [Location(6, 6), Location(5, 6), Location(3, 6)]),
+    BallPiece(PlayerType.ball, Location(6, 6), [
+      // movimiento de horizontal
+      Location(6, 2), Location(6, 3), Location(6, 4), Location(6, 5),
+      Location(6, 7), Location(6, 8), Location(6, 9), Location(6, 10),
+      // movimiento vertical
+      Location(2, 6), Location(3, 6), Location(4, 6), Location(5, 6),
+      Location(7, 6), Location(8, 6), Location(9, 6), Location(10, 6),
+    ]),
     Player(PlayerType.player1, Location(3, 6),
         [Location(3, 6), Location(4, 6), Location(5, 6)]),
     Player(PlayerType.player2, Location(9, 6),
