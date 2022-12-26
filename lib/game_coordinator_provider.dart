@@ -132,4 +132,16 @@ class GameCoordProvider extends ChangeNotifier {
     ];
     // notifyListeners();
   }
+
+  changeModeType() {
+    gameType == GameType.pc
+        ? gameType = GameType.jugador
+        : gameType = GameType.pc;
+    notifyListeners();
+  }
+
+  void changeMaxGol(int maxgol) {
+    maxGols = maxgol;
+    notifyListeners();
+  }
 }

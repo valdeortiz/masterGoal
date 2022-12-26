@@ -6,11 +6,12 @@ class BotonSiguiente extends StatelessWidget {
     this.onTap,
     this.titulo,
     this.color,
+    this.icono = Icons.input,
   }) : super(key: key);
 
   final Function()? onTap;
   final String? titulo;
-  // final icono;
+  final IconData icono;
   final Color? color;
 
   @override
@@ -39,8 +40,8 @@ class BotonSiguiente extends StatelessWidget {
                 ),
               ),
             ),
-            const Icon(
-              Icons.input,
+            Icon(
+              icono,
               color: Colors.white,
             ),
           ],
