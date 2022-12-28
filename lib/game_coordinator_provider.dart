@@ -10,7 +10,7 @@ class GameCoordProvider extends ChangeNotifier {
   int player1Gols = 0;
   int player2Gols = 0;
   String? namePlayer1;
-  String? namePlayer2 = 'PC';
+  String? namePlayer2;
   int maxGols = 1;
   bool isWin = false;
   GameType gameType = GameType.pc;
@@ -138,7 +138,6 @@ class GameCoordProvider extends ChangeNotifier {
   void newGame() {
     player1Gols = 0;
     player2Gols = 0;
-    namePlayer2 = 'PC';
     isWin = false;
     currentTurn = PlayerType.player1;
     currentBallTurn;

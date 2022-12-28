@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
                 const TutorialScreen(),
             PlayScreen.playScreenPath: (context) => const PlayScreen(),
             FinalGameScreen.path: (context) => FinalGameScreen(),
-            ConfiguracionScreen.path: (context) => const ConfiguracionScreen(),
+            ConfiguracionScreen.path: (context) => ConfiguracionScreen(),
           },
         ),
       ),

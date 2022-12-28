@@ -175,10 +175,9 @@ class PlayScreen extends StatelessWidget {
 }
 
 class BoardWidget extends StatefulWidget {
-  const BoardWidget(
-      {super.key, this.clockProvider, this.gamePro, this.audioPro});
+  const BoardWidget({super.key, this.clockProvider, this.audioPro});
   final CountdownProvider? clockProvider;
-  final GameCoordProvider? gamePro;
+
   final AudioProvider? audioPro;
   @override
   State<BoardWidget> createState() => _BoardWidgetState();
@@ -187,16 +186,10 @@ class BoardWidget extends StatefulWidget {
 class _BoardWidgetState extends State<BoardWidget> {
   late final double tileWidth =
       MediaQuery.of(context).size.width / Constantes.columnas;
-
-  // final GameCoordinator coordinator = GameCoordinator.newGame();
-  // late GameCoordProvider? coordinator;
-
-  // List<MgPiece> get pieces => coordinator.pieces;
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
     widget.audioPro?.iniciarAudio();
-    // coordinator = widget.gamePro;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.clockProvider?.startStopTimer();
       Provider.of<GameCoordProvider>(context, listen: false).newGame();
@@ -206,8 +199,6 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   @override
   void didChangeDependencies() {
-    // coordinator = Provider.of<GameCoordProvider>(context, listen: false);
-    // coordinator?.newGame();
     super.didChangeDependencies();
   }
 
@@ -215,8 +206,6 @@ class _BoardWidgetState extends State<BoardWidget> {
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     widget.clockProvider?.cancelTimer();
-    // coordinator?.newGame();
-    // Provider.of<GameCoordProvider>(context, listen: false).newGame();
     widget.audioPro?.stop();
     super.dispose();
   }
@@ -294,9 +283,6 @@ class _BoardWidgetState extends State<BoardWidget> {
               piece.pieceType) {
         return false;
       }
-
-      print(" $columna, $fila");
-      print("OnWill: $piece");
 
       return piece.canMoveTo(columna, fila) &&
           !Provider.of<GameCoordProvider>(context, listen: false)

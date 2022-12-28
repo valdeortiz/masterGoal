@@ -8,14 +8,17 @@ import 'package:mastergoal/widgets/boton_siguiente.dart';
 import 'package:provider/provider.dart';
 
 class ConfiguracionScreen extends StatelessWidget {
-  const ConfiguracionScreen({super.key});
+  ConfiguracionScreen({super.key});
   static const path = '/config';
+  final TextEditingController nombreJugador1 = TextEditingController(text: "");
+  final TextEditingController nombreJugador2 = TextEditingController(text: "");
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: ListView(
+          shrinkWrap: true,
           padding: const EdgeInsets.all(20.0),
           children: [
             Lottie.asset('assets/lottie/settings.json', height: 250),
@@ -152,6 +155,86 @@ class ConfiguracionScreen extends StatelessWidget {
             ),
             const SizedBox(
               height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          border:
+                              Border.all(color: Colors.blueAccent, width: 2)),
+                      child: TextField(
+                        maxLength: 10,
+                        controller: nombreJugador1,
+                        decoration: const InputDecoration(
+                          hintText: "Jugaddor 1",
+                          // icon: Icon(Icons.account_circle_outlined),
+                        ),
+                        style: const TextStyle(fontSize: 17),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Provider.of<GameCoordProvider>(context, listen: false)
+                            .namePlayer1 = nombreJugador1.text;
+                        // nombreJugador1.clear();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    "El nombre se modifico correctamente")));
+                      },
+                      child: const Text("Cambiar nombre")),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                        border: Border.all(color: Colors.blueAccent, width: 2),
+                      ),
+                      child: TextField(
+                        maxLength: 10,
+                        controller: nombreJugador2,
+                        decoration: const InputDecoration(
+                          hintText: "Jugaddor 2",
+                          // icon: Icon(Icons.account_circle_outlined),
+                        ),
+                        style: const TextStyle(fontSize: 17),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Provider.of<GameCoordProvider>(context, listen: false)
+                            .namePlayer2 = nombreJugador2.text;
+                        // nombreJugador2.clear();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    "El nombre se modifico correctamente")));
+                      },
+                      child: const Text("Cambiar nombre")),
+                ],
+              ),
             ),
             BotonSiguiente(
               onTap: () =>
