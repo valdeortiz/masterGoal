@@ -17,27 +17,32 @@ class GameCoordProvider extends ChangeNotifier {
 
   PlayerType currentTurn = PlayerType.player1;
   PlayerType? currentBallTurn;
-  // List<MgPiece> moveInicial = [
-  //   BallPiece(PlayerType.ball, Location(6, 6),
-  //       [Location(6, 6), Location(5, 6), Location(4, 6)]),
-  //   Player(PlayerType.player1, Location(3, 6),
-  //       [Location(3, 6), Location(4, 6), Location(5, 6)]),
-  //   Player(PlayerType.player2, Location(9, 6),
-  //       [Location(9, 6), Location(10, 6), Location(11, 6)]),
-  // ];
-  // [Location(6, 5), Location(6, 7), Location(7, 6), Location(5, 6), Location(5, 6)];
-  final ballInicial = BallPiece(PlayerType.ball, Location(6, 6), [
+
+  final List<Location> ballInicialList = [
     // movimiento de horizontal
     Location(6, 2), Location(6, 3), Location(6, 4), Location(6, 5),
     Location(6, 7), Location(6, 8), Location(6, 9), Location(6, 10),
     // movimiento vertical
     Location(2, 6), Location(3, 6), Location(4, 6), Location(5, 6),
     Location(7, 6), Location(8, 6), Location(9, 6), Location(10, 6),
-  ]);
-  final player1Inicial = Player(PlayerType.player1, Location(3, 6),
-      [Location(7, 6), Location(4, 6), Location(5, 6)]);
-  final player2Inicial = Player(PlayerType.player2, Location(9, 6),
-      [Location(12, 6), Location(10, 6), Location(11, 6)]);
+  ];
+
+  final List<Location> player1InicialList = [
+    // movimientos verticales
+    Location(1, 6), Location(2, 6), Location(4, 6), Location(5, 6),
+    // movimientos horizontales
+    Location(3, 7), Location(3, 8), Location(3, 5), Location(3, 4),
+    // movimientos diagonales
+    Location(4, 5), Location(2, 5), Location(2, 7), Location(4, 7),
+  ];
+  final List<Location> player2InicialList = [
+    // movimientos verticales
+    Location(7, 6), Location(8, 6), Location(10, 6), Location(11, 6),
+    // movimientos horizontales
+    Location(9, 4), Location(9, 5), Location(9, 7), Location(9, 8),
+    // movimientos diagonales
+    Location(10, 5), Location(8, 5), Location(8, 7), Location(10, 7),
+  ];
 
   List<MgPiece> pieces = [
     BallPiece(PlayerType.ball, Location(6, 6), [
@@ -48,10 +53,22 @@ class GameCoordProvider extends ChangeNotifier {
       Location(2, 6), Location(3, 6), Location(4, 6), Location(5, 6),
       Location(7, 6), Location(8, 6), Location(9, 6), Location(10, 6),
     ]),
-    Player(PlayerType.player1, Location(3, 6),
-        [Location(3, 6), Location(4, 6), Location(5, 6)]),
-    Player(PlayerType.player2, Location(9, 6),
-        [Location(9, 6), Location(10, 6), Location(11, 6)]),
+    Player(PlayerType.player1, Location(3, 6), [
+      // movimientos verticales
+      Location(1, 6), Location(2, 6), Location(4, 6), Location(5, 6),
+      // movimientos horizontales
+      Location(3, 7), Location(3, 8), Location(3, 5), Location(3, 4),
+      // movimientos diagonales
+      Location(4, 5), Location(2, 5), Location(2, 7), Location(4, 7),
+    ]),
+    Player(PlayerType.player2, Location(9, 6), [
+      // movimientos verticales
+      Location(7, 6), Location(8, 6), Location(10, 6), Location(11, 6),
+      // movimientos horizontales
+      Location(9, 4), Location(9, 5), Location(9, 7), Location(9, 8),
+      // movimientos diagonales
+      Location(10, 5), Location(8, 5), Location(8, 7), Location(10, 7),
+    ]),
   ];
 
   MgPiece? pieceOfTile(int x, int y) =>
@@ -87,9 +104,9 @@ class GameCoordProvider extends ChangeNotifier {
   }
 
   void restart() {
-    pieces[0] = ballInicial;
-    pieces[1] = player1Inicial;
-    pieces[2] = player2Inicial;
+    pieces[0] = BallPiece(PlayerType.ball, Location(6, 6), ballInicialList);
+    pieces[1] = Player(PlayerType.player1, Location(3, 6), player1InicialList);
+    pieces[2] = Player(PlayerType.player2, Location(9, 6), player2InicialList);
     currentBallTurn = null;
   }
 
@@ -126,9 +143,9 @@ class GameCoordProvider extends ChangeNotifier {
     currentTurn = PlayerType.player1;
     currentBallTurn;
     pieces = [
-      ballInicial,
-      player1Inicial,
-      player2Inicial,
+      BallPiece(PlayerType.ball, Location(6, 6), ballInicialList),
+      Player(PlayerType.player1, Location(3, 6), player1InicialList),
+      Player(PlayerType.player2, Location(9, 6), player2InicialList),
     ];
     notifyListeners();
   }

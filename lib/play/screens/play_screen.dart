@@ -26,7 +26,7 @@ class PlayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clockProvider = Provider.of<CountdownProvider>(context);
-    final game = Provider.of<GameCoordProvider>(context);
+    // final game = Provider.of<GameCoordProvider>(context);
     final audio = Provider.of<AudioProvider>(context);
 
     return Scaffold(
@@ -144,14 +144,7 @@ class PlayScreen extends StatelessWidget {
                                     ),
                                     ElevatedButton(
                                       onPressed: () {
-                                        game.newGame();
                                         Navigator.of(context).pop();
-                                      },
-                                      child: const Text("Reiniciar juego"),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // Navigator.of(context).repl
                                         Navigator.of(context).pop();
                                       },
                                       child:
@@ -171,7 +164,6 @@ class PlayScreen extends StatelessWidget {
               Expanded(
                   child: BoardWidget(
                 clockProvider: clockProvider,
-                gamePro: game,
                 audioPro: audio,
               )),
             ],
@@ -197,17 +189,17 @@ class _BoardWidgetState extends State<BoardWidget> {
       MediaQuery.of(context).size.width / Constantes.columnas;
 
   // final GameCoordinator coordinator = GameCoordinator.newGame();
-  late GameCoordProvider? coordinator;
+  // late GameCoordProvider? coordinator;
 
   // List<MgPiece> get pieces => coordinator.pieces;
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
     widget.audioPro?.iniciarAudio();
-    coordinator = widget.gamePro;
+    // coordinator = widget.gamePro;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.clockProvider?.startStopTimer();
-      coordinator?.newGame();
+      Provider.of<GameCoordProvider>(context, listen: false).newGame();
     });
     super.initState();
   }
@@ -290,11 +282,14 @@ class _BoardWidgetState extends State<BoardWidget> {
         return false;
       }
       if (piece.name == PlayerType.player2.name &&
-          coordinator!.gameType == GameType.pc) {
+          Provider.of<GameCoordProvider>(context, listen: false).gameType ==
+              GameType.pc) {
         // Esperamos a que la pc juegue
         return false;
       }
-      if (coordinator!.currentBallTurn == null &&
+      if (Provider.of<GameCoordProvider>(context, listen: false)
+                  .currentBallTurn ==
+              null &&
           Provider.of<GameCoordProvider>(context, listen: false).currentTurn !=
               piece.pieceType) {
         return false;
@@ -304,7 +299,8 @@ class _BoardWidgetState extends State<BoardWidget> {
       print("OnWill: $piece");
 
       return piece.canMoveTo(columna, fila) &&
-          !coordinator!.pieces
+          !Provider.of<GameCoordProvider>(context, listen: false)
+              .pieces
               .any((piece) => piece.location == Location(columna, fila));
       // coordinator!.pieceOfTile(columna, fila),
       // coordinator!.onPosesion(columna, fila));
@@ -339,18 +335,34 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   Location moverPC() {
     // En caso de que el jugador quede cerca de la pelota, colocar un future con el movimiento de la pelota
-    List a = tomarPelota(coordinator!.pieces[2], coordinator!.pieces[0]);
+    // TODO: Varificar que donde se mueva no se encuentra una pieza
+    // TODO: Varificar que donde se mueva no se encuentre fuera del rango
+    // TODO: Varificar que donde se mueva no sea la posicion donde se encuentra
+    // TODO: Que la pc mueva la pelota hacia el frente para evitar goles en contra
+    List a = tomarPelota(
+        Provider.of<GameCoordProvider>(context, listen: false).pieces[2],
+        Provider.of<GameCoordProvider>(context, listen: false).pieces[0]);
     if (a.first != -1 && a.last != -1) {
       return Location(a.first, a.last);
     }
-    coordinator!.pieces[2].movesPosible =
-        coordinator!.pieces[2].moves(coordinator!.pieces);
+    Provider.of<GameCoordProvider>(context, listen: false)
+        .pieces[2]
+        .movesPosible = Provider.of<GameCoordProvider>(context,
+            listen: false)
+        .pieces[2]
+        .moves(Provider.of<GameCoordProvider>(context, listen: false).pieces);
     final randon = Random();
-    return coordinator!.pieces[2].movesPosible[
-        randon.nextInt(coordinator!.pieces[2].movesPosible.length)];
+    return Provider.of<GameCoordProvider>(context, listen: false)
+            .pieces[2]
+            .movesPosible[
+        randon.nextInt(Provider.of<GameCoordProvider>(context, listen: false)
+            .pieces[2]
+            .movesPosible
+            .length)];
   }
 
   List tomarPelota(MgPiece piece, MgPiece ball) {
+    // TODO: Verificar que la pelota se encuentre dentro del rango
     int i = ball.location.x;
     int j = ball.location.y;
     if (piece.canMoveTo(i + 1, j)) {
@@ -384,18 +396,35 @@ class _BoardWidgetState extends State<BoardWidget> {
   Location moverPelota() {
     List a = [3, 4, 5, 6, 7, 8, 9];
     for (var c in a) {
-      if (coordinator!.pieces[0].canMoveTo(0, c)) return Location(0, c);
+      if (Provider.of<GameCoordProvider>(context, listen: false)
+          .pieces[0]
+          .canMoveTo(0, c)) {
+        return Location(0, c);
+      }
     }
-    coordinator!.pieces[0].movesPosible =
-        coordinator!.pieces[0].moves(coordinator!.pieces);
+    Provider.of<GameCoordProvider>(context, listen: false)
+        .pieces[0]
+        .movesPosible = Provider.of<GameCoordProvider>(context,
+            listen: false)
+        .pieces[0]
+        .moves(Provider.of<GameCoordProvider>(context, listen: false).pieces);
     final randon = Random();
-    return coordinator!.pieces[0].movesPosible[
-        randon.nextInt(coordinator!.pieces[0].movesPosible.length)];
+    return Provider.of<GameCoordProvider>(context, listen: false)
+            .pieces[0]
+            .movesPosible[
+        randon.nextInt(Provider.of<GameCoordProvider>(context, listen: false)
+            .pieces[0]
+            .movesPosible
+            .length)];
   }
 
   onAcept(MgPiece piece, columna, fila) {
     late bool habilitBall;
-    coordinator?.pieces[1].movesPosible = coordinator!.pieces[1]
+    Provider.of<GameCoordProvider>(context, listen: false)
+        .pieces[1]
+        .movesPosible = Provider.of<GameCoordProvider>(context,
+            listen: false)
+        .pieces[1]
         .moves(Provider.of<GameCoordProvider>(context, listen: false).pieces);
     // seteamos la nueva posicion de la ficha
     piece.location = Location(columna, fila);
@@ -403,17 +432,33 @@ class _BoardWidgetState extends State<BoardWidget> {
         .moves(Provider.of<GameCoordProvider>(context, listen: false).pieces);
 
     if (piece is BallPiece) {
-      coordinator?.currentBallTurn = null;
+      Provider.of<GameCoordProvider>(context, listen: false).currentBallTurn =
+          null;
       final isGol = piece.isGol(
           Provider.of<GameCoordProvider>(context, listen: false).currentTurn,
           columna,
           fila);
       if (isGol) {
+        if (Provider.of<GameCoordProvider>(context, listen: false).gameType ==
+                GameType.pc &&
+            Provider.of<GameCoordProvider>(context, listen: false)
+                    .currentTurn ==
+                PlayerType.player1) {
+          Future.delayed(const Duration(seconds: 2), () {
+            final data = moverPC();
+            onAcept(
+              Provider.of<GameCoordProvider>(context, listen: false).pieces[2],
+              data.x,
+              data.y,
+            );
+          });
+        }
         Provider.of<GameCoordProvider>(context, listen: false).setGol();
-        coordinator?.restart();
+        Provider.of<GameCoordProvider>(context, listen: false).restart();
       } else {
         Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
-        if (coordinator!.gameType == GameType.pc &&
+        if (Provider.of<GameCoordProvider>(context, listen: false).gameType ==
+                GameType.pc &&
             Provider.of<GameCoordProvider>(context, listen: false)
                     .currentTurn ==
                 PlayerType.player2) {
@@ -433,16 +478,21 @@ class _BoardWidgetState extends State<BoardWidget> {
       return;
     }
     habilitBall = piece is Player
-        ? piece.enableBall(coordinator!.pieces[0].location)
+        ? piece.enableBall(
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .pieces[0]
+                .location)
         : false;
 
-    coordinator!.currentBallTurn = habilitBall ? piece.pieceType : null;
+    Provider.of<GameCoordProvider>(context, listen: false).currentBallTurn =
+        habilitBall ? piece.pieceType : null;
 
     if (!habilitBall) {
       Provider.of<GameCoordProvider>(context, listen: false).changeTurn();
       // Si es modo de juego contra la pc, y el turno era del player 1
       // Mandamos a jugar a la maquina al camviar el turno
-      if (coordinator!.gameType == GameType.pc &&
+      if (Provider.of<GameCoordProvider>(context, listen: false).gameType ==
+              GameType.pc &&
           piece.pieceType == PlayerType.player1) {
         Future.delayed(const Duration(seconds: 2), () {
           final data = moverPC();
@@ -457,7 +507,8 @@ class _BoardWidgetState extends State<BoardWidget> {
 
     // verificamos que el tipo de juego sea contra pc, que tenga habilitado la pelota y el jugador sea 2
     // en caso de que sea TRUE todas, se juega automatico simulando una pc
-    if (coordinator!.gameType == GameType.pc &&
+    if (Provider.of<GameCoordProvider>(context, listen: false).gameType ==
+            GameType.pc &&
         habilitBall &&
         piece.pieceType == PlayerType.player2) {
       final data = moverPelota();
@@ -476,7 +527,8 @@ class _BoardWidgetState extends State<BoardWidget> {
   }
 
   Widget buildTextCell(int x, int y) {
-    final piece = coordinator!.pieceOfTile(x, y);
+    final piece = Provider.of<GameCoordProvider>(context, listen: false)
+        .pieceOfTile(x, y);
     if (piece != null) {
       return assetPaint(piece, x, y);
     }
