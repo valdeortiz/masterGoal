@@ -76,7 +76,7 @@ class BallPiece extends MgPiece {
 
       return destination;
     }).whereType<Location>().where((location) => location.isValid).toList();
-    print(a);
+    // print(a);
     return a;
   }
 
@@ -84,12 +84,20 @@ class BallPiece extends MgPiece {
   String get name => 'ball';
 
   @override
-  bool canMoveTo(int x, int y) {
-    // if (piece != null) return false;
-    // if (posesion == false) return false;
-    if (((abs(x - this.x) <= 4) && (this.y == y)) ||
-        ((abs(y - this.y) <= 4) && (this.x == x)) ||
-        ((abs(y - this.y) == abs(x - this.x)) && (abs(x - this.x) <= 4))) {
+  bool canMoveTo(int y, int x, MgPiece? piece, bool posesion, String? turno) {
+    if (piece != null) return false;
+    if (posesion == false) return false;
+    if (turno == "player1") {
+      if (y == 0 && (x == 0 || x == 12)) return false;
+      if ((x >= 1 && x <= 11) && (y <= 4)) return false;
+    } else {
+      if (y == 13 && (x == 0 || x == 12)) return false;
+      if ((x >= 1 && x <= 11) && (y >= 10)) return false;
+    }
+    if (x < 0 || y < 0 || x > 12 || y > 13) return false;
+    if (((abs(x - this.y) <= 4) && (this.x == y)) ||
+        ((abs(y - this.x) <= 4) && (this.y == x)) ||
+        ((abs(y - this.x) == abs(x - this.y)) && (abs(x - this.y) <= 4))) {
       return true;
     }
     return false;

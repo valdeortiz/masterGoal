@@ -286,6 +286,11 @@ class _BoardWidgetState extends State<BoardWidget> {
       //   Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
       //   return false;
       // }
+
+      // if (coordinator!.onDispute(coordinator!.pieces[0].location)) {
+      //   coordinator!.currentBallTurn = null;
+      // }
+
       if (piece == null) {
         return false;
       }
@@ -300,10 +305,16 @@ class _BoardWidgetState extends State<BoardWidget> {
         return false;
       }
 
-      print(" $columna, $fila");
-      print("OnWill: $piece");
+      // print(" $columna, $fila");
+      // print("OnWill: $piece");
 
-      return piece.canMoveTo(columna, fila) &&
+      return piece.canMoveTo(
+              columna,
+              fila,
+              coordinator!.pieceOfTile(columna, fila),
+              coordinator!
+                  .onPosesion(columna, fila, coordinator!.currentTurn.name),
+              coordinator!.currentTurn.name) &&
           !coordinator!.pieces
               .any((piece) => piece.location == Location(columna, fila));
       // coordinator!.pieceOfTile(columna, fila),
@@ -313,8 +324,14 @@ class _BoardWidgetState extends State<BoardWidget> {
       // final piece = coordinator!.pieceOfTile(x, y);
       late bool pieceMove;
       if (candidateData.isNotEmpty) {
-        pieceMove = candidateData[0]
-                ?.canMoveTo(candidateData[0]!.x, candidateData[0]!.y) ??
+        pieceMove = candidateData[0]?.canMoveTo(
+                candidateData[0]!.x,
+                candidateData[0]!.y,
+                coordinator!
+                    .pieceOfTile(candidateData[0]!.x, candidateData[0]!.y),
+                coordinator!.onPosesion(candidateData[0]!.x,
+                    candidateData[0]!.y, coordinator!.currentTurn.name),
+                coordinator!.currentTurn.name) ??
             false;
       } else {
         pieceMove = false;
@@ -353,28 +370,68 @@ class _BoardWidgetState extends State<BoardWidget> {
   List tomarPelota(MgPiece piece, MgPiece ball) {
     int i = ball.location.x;
     int j = ball.location.y;
-    if (piece.canMoveTo(i + 1, j)) {
+    if (piece.canMoveTo(
+        i + 1,
+        j,
+        coordinator!.pieceOfTile(i + 1, j),
+        coordinator!.onPosesion(i + 1, j, coordinator!.currentTurn.name),
+        coordinator!.currentTurn.name)) {
       //abajo
       return [i + 1, j];
-    } else if (piece.canMoveTo(i - 1, j)) {
+    } else if (piece.canMoveTo(
+        i - 1,
+        j,
+        coordinator!.pieceOfTile(i - 1, j),
+        coordinator!.onPosesion(i - 1, j, coordinator!.currentTurn.name),
+        coordinator!.currentTurn.name)) {
       //arriba
       return [i - 1, j];
-    } else if (piece.canMoveTo(i + 1, j + 1)) {
+    } else if (piece.canMoveTo(
+        i + 1,
+        j + 1,
+        coordinator!.pieceOfTile(i + 1, j + 1),
+        coordinator!.onPosesion(i + 1, j + 1, coordinator!.currentTurn.name),
+        coordinator!.currentTurn.name)) {
       //abajo der
       return [i + 1, j + 1];
-    } else if (piece.canMoveTo(i + 1, j - 1)) {
+    } else if (piece.canMoveTo(
+        i + 1,
+        j - 1,
+        coordinator!.pieceOfTile(i + 1, j - 1),
+        coordinator!.onPosesion(i + 1, j - 1, coordinator!.currentTurn.name),
+        coordinator!.currentTurn.name)) {
       //abajo izq
       return [i + 1, j - 1];
-    } else if (piece.canMoveTo(i - 1, j - 1)) {
+    } else if (piece.canMoveTo(
+        i - 1,
+        j - 1,
+        coordinator!.pieceOfTile(i - 1, j - 1),
+        coordinator!.onPosesion(i - 1, j - 1, coordinator!.currentTurn.name),
+        coordinator!.currentTurn.name)) {
       //arriba izq
       return [i - 1, j - 1];
-    } else if (piece.canMoveTo(i - 1, j + 1)) {
+    } else if (piece.canMoveTo(
+        i - 1,
+        j + 1,
+        coordinator!.pieceOfTile(i - 1, j + 1),
+        coordinator!.onPosesion(i - 1, j + 1, coordinator!.currentTurn.name),
+        coordinator!.currentTurn.name)) {
       //arriba der
       return [i - 1, j + 1];
-    } else if (piece.canMoveTo(i, j + 1)) {
+    } else if (piece.canMoveTo(
+        i,
+        j + 1,
+        coordinator!.pieceOfTile(i, j + 1),
+        coordinator!.onPosesion(i, j + 1, coordinator!.currentTurn.name),
+        coordinator!.currentTurn.name)) {
       //der
       return [i, j + 1];
-    } else if (piece.canMoveTo(i, j - 1)) {
+    } else if (piece.canMoveTo(
+        i,
+        j - 1,
+        coordinator!.pieceOfTile(i, j - 1),
+        coordinator!.onPosesion(i, j - 1, coordinator!.currentTurn.name),
+        coordinator!.currentTurn.name)) {
       //izq
       return [i, j - 1];
     }
@@ -384,13 +441,40 @@ class _BoardWidgetState extends State<BoardWidget> {
   Location moverPelota() {
     List a = [3, 4, 5, 6, 7, 8, 9];
     for (var c in a) {
-      if (coordinator!.pieces[0].canMoveTo(0, c)) return Location(0, c);
+      if (coordinator!.pieces[0].canMoveTo(
+          0,
+          c,
+          coordinator!.pieceOfTile(c, 0),
+          coordinator!.onPosesion(c, 0, coordinator!.currentTurn.name),
+          coordinator!.currentTurn.name)) {
+        return Location(c, 0);
+      }
     }
-    coordinator!.pieces[0].movesPosible =
-        coordinator!.pieces[0].moves(coordinator!.pieces);
-    final randon = Random();
-    return coordinator!.pieces[0].movesPosible[
-        randon.nextInt(coordinator!.pieces[0].movesPosible.length)];
+    return generarMovAleatorio(coordinator!.pieces[0]);
+    // coordinator!.pieces[0].movesPosible =
+    //     coordinator!.pieces[0].moves(coordinator!.pieces);
+    // final randon = Random();
+    // return coordinator!.pieces[0].movesPosible[
+    //     randon.nextInt(coordinator!.pieces[0].movesPosible.length)];
+  }
+
+  Location generarMovAleatorio(MgPiece piece) {
+    List a = [];
+    for (var i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
+      for (var j in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]) {
+        if (piece.canMoveTo(
+            j,
+            i,
+            coordinator!.pieceOfTile(i, j),
+            coordinator!.onPosesion(i, j, coordinator!.currentTurn.name),
+            coordinator!.currentTurn.name)) {
+          a.add([i, j]);
+        }
+      }
+    }
+    final random = Random();
+    List mov = a[random.nextInt(a.length)];
+    return Location(mov[0], mov[1]);
   }
 
   onAcept(MgPiece piece, columna, fila) {

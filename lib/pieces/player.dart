@@ -11,8 +11,8 @@ class Player extends MgPiece {
   ) : super(pieceType, location, movesPosibles);
 
   enableBall(Location ballLocation) {
-    print("bh $ballLocation");
-    print("h $location");
+    // print("bh $ballLocation");
+    // print("h $location");
     // La pieza debe estar en una posicion adyacente a la pos de la pelota
     if ((abs(x - ballLocation.x) <= 1 && abs(y - ballLocation.y) <= 1) ||
         (y == ballLocation.y && abs(ballLocation.x - x) <= 1) ||
@@ -65,7 +65,7 @@ class Player extends MgPiece {
 
       return destination;
     }).whereType<Location>().where((location) => location.isValid).toList();
-    print(a);
+    // print(a);
     return a;
   }
 
@@ -94,17 +94,18 @@ class Player extends MgPiece {
 
       return destination;
     }).whereType<Location>().where((location) => location.isValid).toList();
-    print(a);
+    // print(a);
     return a;
   }
 
   @override
-  bool canMoveTo(int x, int y) {
+  bool canMoveTo(int y, int x, MgPiece? piece, bool posesion, String? turno) {
     // Todo jugador puede moverse= hasta dos casillas en linea recta
-    // if (piece != null) return false;
-    if (((abs(x - this.x) <= 2) && (this.y == y)) ||
-        ((abs(y - this.y) <= 2) && (this.x == x)) ||
-        ((abs(y - this.y) == abs(x - this.x)) && (abs(x - this.x) <= 2))) {
+    if (piece != null) return false;
+    if (x < 0 || y < 0 || y > 12 || x > 13) return false;
+    if (((abs(x - this.y) <= 2) && (this.x == y)) ||
+        ((abs(y - this.x) <= 2) && (this.y == x)) ||
+        ((abs(y - this.x) == abs(x - this.y)) && (abs(x - this.y) <= 2))) {
       return true;
     }
     //return

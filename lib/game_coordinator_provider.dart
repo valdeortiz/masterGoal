@@ -61,17 +61,65 @@ class GameCoordProvider extends ChangeNotifier {
       (currentTurn == PlayerType.player1 ? namePlayer1 : namePlayer2) ??
       'Sin nombre';
 
-  bool onPosesion(int x, int y) {
-    if (pieceOfTile(x + 1, y) != null) return false;
-    if (pieceOfTile(x - 1, y) != null) return false;
-    if (pieceOfTile(x + 1, y + 1) != null) return false;
-    if (pieceOfTile(x + 1, y - 1) != null) return false;
-    if (pieceOfTile(x - 1, y + 1) != null) return false;
-    if (pieceOfTile(x - 1, y - 1) != null) return false;
-    if (pieceOfTile(x, y + 1) != null) return false;
-    if (pieceOfTile(x, y - 1) != null) return false;
+  bool onPosesion(int x, int y, String turno) {
+    if (pieceOfTile(x + 1, y) != null &&
+        pieceOfTile(x + 1, y)?.name != "ball" &&
+        pieceOfTile(x + 1, y)?.name != turno) {
+      return false;
+    }
+    if (pieceOfTile(x - 1, y) != null &&
+        pieceOfTile(x - 1, y)?.name != "ball" &&
+        pieceOfTile(x - 1, y)?.name != turno) {
+      return false;
+    }
+    if (pieceOfTile(x + 1, y + 1) != null &&
+        pieceOfTile(x + 1, y + 1)?.name != "ball" &&
+        pieceOfTile(x + 1, y + 1)?.name != turno) {
+      return false;
+    }
+    if (pieceOfTile(x + 1, y - 1) != null &&
+        pieceOfTile(x + 1, y - 1)?.name != "ball" &&
+        pieceOfTile(x + 1, y - 1)?.name != turno) {
+      return false;
+    }
+    if (pieceOfTile(x - 1, y + 1) != null &&
+        pieceOfTile(x - 1, y + 1)?.name != "ball" &&
+        pieceOfTile(x - 1, y + 1)?.name != turno) {
+      return false;
+    }
+    if (pieceOfTile(x - 1, y - 1) != null &&
+        pieceOfTile(x - 1, y - 1)?.name != "ball" &&
+        pieceOfTile(x - 1, y - 1)?.name != turno) {
+      return false;
+    }
+    if (pieceOfTile(x, y + 1) != null &&
+        pieceOfTile(x, y + 1)?.name != "ball" &&
+        pieceOfTile(x, y + 1)?.name != turno) {
+      return false;
+    }
+    if (pieceOfTile(x, y - 1) != null &&
+        pieceOfTile(x, y - 1)?.name != "ball" &&
+        pieceOfTile(x, y - 1)?.name != turno) {
+      return false;
+    }
     return true;
   }
+
+  // bool onDispute(Location ubi) {
+  //   int x = ubi.x;
+  //   int y = ubi.y;
+  //   int c = 0;
+  //   if (pieceOfTile(x + 1, y) != null) c++;
+  //   if (pieceOfTile(x - 1, y) != null) c++;
+  //   if (pieceOfTile(x + 1, y + 1) != null) c++;
+  //   if (pieceOfTile(x + 1, y - 1) != null) c++;
+  //   if (pieceOfTile(x - 1, y + 1) != null) c++;
+  //   if (pieceOfTile(x - 1, y - 1) != null) c++;
+  //   if (pieceOfTile(x, y + 1) != null) c++;
+  //   if (pieceOfTile(x, y - 1) != null) c++;
+  //   if (c > 1) return true;
+  //   return false;
+  // }
 
   String winner() {
     if (player1Gols > player2Gols) {
