@@ -98,18 +98,18 @@ class Player extends MgPiece {
     return a;
   }
 
-  // @override
-  // bool canMoveTo(int x, int y, MgPiece? piece, bool posesion) {
-  //   // Todo jugador puede moverse= hasta dos casillas en linea recta
-  //   if (piece != null) return false;
-  //   // if (((abs(x - this.x) <= 2) && (this.y == y)) ||
-  //   //     ((abs(y - this.y) <= 2) && (this.x == x)) ||
-  //   //     ((abs(y - this.y) == abs(x - this.x)) && (abs(x - this.x) <= 2))) {
-  //   //   return true;
-  //   // }
-  //   return
-  //   // return false;
-  // }
+  @override
+  bool canMoveTo(int x, int y) {
+    // Todo jugador puede moverse= hasta dos casillas en linea recta
+    // if (piece != null) return false;
+    if (((abs(x - this.x) <= 2) && (this.y == y)) ||
+        ((abs(y - this.y) <= 2) && (this.x == x)) ||
+        ((abs(y - this.y) == abs(x - this.x)) && (abs(x - this.x) <= 2))) {
+      return true;
+    }
+    //return
+    return false;
+  }
 
   abs(int value) {
     return value < 0 ? -value : value;

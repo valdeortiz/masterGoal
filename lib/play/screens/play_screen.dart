@@ -339,6 +339,10 @@ class _BoardWidgetState extends State<BoardWidget> {
 
   Location moverPC() {
     // En caso de que el jugador quede cerca de la pelota, colocar un future con el movimiento de la pelota
+    List a = tomarPelota(coordinator!.pieces[2], coordinator!.pieces[0]);
+    if (a.first != -1 && a.last != -1) {
+      return Location(a.first, a.last);
+    }
     coordinator!.pieces[2].movesPosible =
         coordinator!.pieces[2].moves(coordinator!.pieces);
     final randon = Random();
@@ -346,8 +350,47 @@ class _BoardWidgetState extends State<BoardWidget> {
         randon.nextInt(coordinator!.pieces[2].movesPosible.length)];
   }
 
-  List moverPelota() {
-    return [4, 2];
+  List tomarPelota(MgPiece piece, MgPiece ball) {
+    int i = ball.location.x;
+    int j = ball.location.y;
+    if (piece.canMoveTo(i + 1, j)) {
+      //abajo
+      return [i + 1, j];
+    } else if (piece.canMoveTo(i - 1, j)) {
+      //arriba
+      return [i - 1, j];
+    } else if (piece.canMoveTo(i + 1, j + 1)) {
+      //abajo der
+      return [i + 1, j + 1];
+    } else if (piece.canMoveTo(i + 1, j - 1)) {
+      //abajo izq
+      return [i + 1, j - 1];
+    } else if (piece.canMoveTo(i - 1, j - 1)) {
+      //arriba izq
+      return [i - 1, j - 1];
+    } else if (piece.canMoveTo(i - 1, j + 1)) {
+      //arriba der
+      return [i - 1, j + 1];
+    } else if (piece.canMoveTo(i, j + 1)) {
+      //der
+      return [i, j + 1];
+    } else if (piece.canMoveTo(i, j - 1)) {
+      //izq
+      return [i, j - 1];
+    }
+    return [-1, -1];
+  }
+
+  Location moverPelota() {
+    List a = [3, 4, 5, 6, 7, 8, 9];
+    for (var c in a) {
+      if (coordinator!.pieces[0].canMoveTo(0, c)) return Location(0, c);
+    }
+    coordinator!.pieces[0].movesPosible =
+        coordinator!.pieces[0].moves(coordinator!.pieces);
+    final randon = Random();
+    return coordinator!.pieces[0].movesPosible[
+        randon.nextInt(coordinator!.pieces[0].movesPosible.length)];
   }
 
   onAcept(MgPiece piece, columna, fila) {
@@ -423,8 +466,8 @@ class _BoardWidgetState extends State<BoardWidget> {
           () => onAcept(
                 Provider.of<GameCoordProvider>(context, listen: false)
                     .pieces[0],
-                data[0],
-                data[1],
+                data.x,
+                data.y,
               ));
     }
     if (mounted) {
