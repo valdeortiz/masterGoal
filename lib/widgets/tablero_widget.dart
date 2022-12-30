@@ -23,7 +23,7 @@ class TableroPuntuacion extends StatelessWidget {
                 alignment: Alignment.center,
                 width: 100,
                 child: Text(
-                  "Jugador",
+                  "Jugador 1",
                   textAlign: TextAlign.center,
                   style: _style,
                 ),
@@ -79,7 +79,7 @@ class TableroPuntuacion extends StatelessWidget {
                 width: 100,
                 alignment: Alignment.center,
                 child: Text(
-                  "PC",
+                  "Jugador 2",
                   textAlign: TextAlign.center,
                   style: _style,
                 ),

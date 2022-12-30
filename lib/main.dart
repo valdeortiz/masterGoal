@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'Master Goal',
-          // themeMode: ThemeMode.light,
+          themeMode: ThemeMode.light,
           darkTheme: ThemeData(
             textTheme: textThemeDark,
             scaffoldBackgroundColor: backgroundDark,
@@ -60,9 +60,9 @@ class MyApp extends StatelessWidget {
             primaryIconTheme: iconThemeData1,
           ),
 
-          // initialRoute: Login.loginPath,
+          initialRoute: Login.loginPath,
           // initialRoute: PlayScreen.playScreenPath,
-          initialRoute: MenuPrincipal.menuPath,
+          // initialRoute: MenuPrincipal.menuPath,
           routes: {
             Login.loginPath: (context) => const Login(),
             SignIn.singInPath: (context) => SignIn(),

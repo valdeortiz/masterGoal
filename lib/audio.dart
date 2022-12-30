@@ -18,7 +18,7 @@ class AudioProvider extends ChangeNotifier {
     await audio.resume();
     isPlay = true;
     isStop = false;
-    // await audio.pl
+    await audio.setReleaseMode(ReleaseMode.loop);
     notifyListeners();
   }
 
