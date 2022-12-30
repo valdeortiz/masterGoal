@@ -9,6 +9,7 @@ import 'package:mastergoal/game_coordinator_provider.dart';
 import 'package:mastergoal/pieces/ball.dart';
 import 'package:mastergoal/pieces/mg_pieces.dart';
 import 'package:mastergoal/pieces/player.dart';
+import 'package:mastergoal/play/screens/final_game.dart';
 import 'package:mastergoal/widgets/generic_dialog.dart';
 import 'package:mastergoal/widgets/tablero_widget.dart';
 import 'package:provider/provider.dart';
@@ -262,11 +263,16 @@ class _BoardWidgetState extends State<BoardWidget> {
       onAcept(piece, columna, fila);
       // En caso de jugar, jugador vs jugador comentar el future
     }, onWillAccept: (piece) {
-      // if ((widget.clockProvider?.isWin ?? false) ||
-      //     Provider.of<GameCoordProvider>(context, listen: false).isWin) {
-      //   Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
-      //   return false;
+      if ((widget.clockProvider?.isWin ?? false) ||
+          Provider.of<GameCoordProvider>(context, listen: false).isWin) {
+        Navigator.of(context).pushReplacementNamed(FinalGameScreen.path);
+        return false;
+      }
+
+      // if (Provider.of<GameCoordProvider>(context, listen: false).onDispute(Provider.of<GameCoordProvider>(context, listen: false).pieces[0].location)) {
+      //   Provider.of<GameCoordProvider>(context, listen: false).currentBallTurn = null;
       // }
+
       if (piece == null) {
         return false;
       }
@@ -283,20 +289,47 @@ class _BoardWidgetState extends State<BoardWidget> {
               piece.pieceType) {
         return false;
       }
+      if (Provider.of<GameCoordProvider>(context, listen: false)
+                  .currentBallTurn !=
+              null &&
+          piece.pieceType != PlayerType.ball) {
+        return false;
+      }
 
-      return piece.canMoveTo(columna, fila) &&
+      // print(" $columna, $fila");
+      // print("OnWill: $piece");
+
+      return piece.canMoveTo(
+              columna,
+              fila,
+              Provider.of<GameCoordProvider>(context, listen: false)
+                  .pieceOfTile(columna, fila),
+              Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+                  columna,
+                  fila,
+                  Provider.of<GameCoordProvider>(context, listen: false)
+                      .currentTurn
+                      .name),
+              Provider.of<GameCoordProvider>(context, listen: false)
+                  .currentTurn
+                  .name) &&
           !Provider.of<GameCoordProvider>(context, listen: false)
               .pieces
               .any((piece) => piece.location == Location(columna, fila));
-      // coordinator!.pieceOfTile(columna, fila),
-      // coordinator!.onPosesion(columna, fila));
+      // Provider.of<GameCoordProvider>(context, listen: false).pieceOfTile(columna, fila),
+      // Provider.of<GameCoordProvider>(context, listen: false).onPosesion(columna, fila));
     }, builder: (context, candidateData, rejectedData) {
       // print("candidate $candidateData, rejec: $rejectedData");
-      // final piece = coordinator!.pieceOfTile(x, y);
+      // final piece = Provider.of<GameCoordProvider>(context, listen: false).pieceOfTile(x, y);
       late bool pieceMove;
       if (candidateData.isNotEmpty) {
         pieceMove = candidateData[0]
-                ?.canMoveTo(candidateData[0]!.x, candidateData[0]!.y) ??
+                ?.moves(Provider.of<GameCoordProvider>(context, listen: false)
+                    .pieces)
+                .contains(Location(
+                  candidateData[0]!.x,
+                  candidateData[0]!.y,
+                )) ??
             false;
       } else {
         pieceMove = false;
@@ -351,28 +384,132 @@ class _BoardWidgetState extends State<BoardWidget> {
     // TODO: Verificar que la pelota se encuentre dentro del rango
     int i = ball.location.x;
     int j = ball.location.y;
-    if (piece.canMoveTo(i + 1, j)) {
+    if (piece.canMoveTo(
+        i + 1,
+        j,
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .pieceOfTile(i + 1, j),
+        Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+            i + 1,
+            j,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name),
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .currentTurn
+            .name)) {
       //abajo
       return [i + 1, j];
-    } else if (piece.canMoveTo(i - 1, j)) {
+    } else if (piece.canMoveTo(
+        i - 1,
+        j,
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .pieceOfTile(i - 1, j),
+        Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+            i - 1,
+            j,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name),
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .currentTurn
+            .name)) {
       //arriba
       return [i - 1, j];
-    } else if (piece.canMoveTo(i + 1, j + 1)) {
+    } else if (piece.canMoveTo(
+        i + 1,
+        j + 1,
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .pieceOfTile(i + 1, j + 1),
+        Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+            i + 1,
+            j + 1,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name),
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .currentTurn
+            .name)) {
       //abajo der
       return [i + 1, j + 1];
-    } else if (piece.canMoveTo(i + 1, j - 1)) {
+    } else if (piece.canMoveTo(
+        i + 1,
+        j - 1,
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .pieceOfTile(i + 1, j - 1),
+        Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+            i + 1,
+            j - 1,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name),
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .currentTurn
+            .name)) {
       //abajo izq
       return [i + 1, j - 1];
-    } else if (piece.canMoveTo(i - 1, j - 1)) {
+    } else if (piece.canMoveTo(
+        i - 1,
+        j - 1,
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .pieceOfTile(i - 1, j - 1),
+        Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+            i - 1,
+            j - 1,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name),
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .currentTurn
+            .name)) {
       //arriba izq
       return [i - 1, j - 1];
-    } else if (piece.canMoveTo(i - 1, j + 1)) {
+    } else if (piece.canMoveTo(
+        i - 1,
+        j + 1,
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .pieceOfTile(i - 1, j + 1),
+        Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+            i - 1,
+            j + 1,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name),
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .currentTurn
+            .name)) {
       //arriba der
       return [i - 1, j + 1];
-    } else if (piece.canMoveTo(i, j + 1)) {
+    } else if (piece.canMoveTo(
+        i,
+        j + 1,
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .pieceOfTile(i, j + 1),
+        Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+            i,
+            j + 1,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name),
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .currentTurn
+            .name)) {
       //der
       return [i, j + 1];
-    } else if (piece.canMoveTo(i, j - 1)) {
+    } else if (piece.canMoveTo(
+        i,
+        j - 1,
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .pieceOfTile(i, j - 1),
+        Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+            i,
+            j - 1,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name),
+        Provider.of<GameCoordProvider>(context, listen: false)
+            .currentTurn
+            .name)) {
       //izq
       return [i, j - 1];
     }
@@ -384,24 +521,57 @@ class _BoardWidgetState extends State<BoardWidget> {
     for (var c in a) {
       if (Provider.of<GameCoordProvider>(context, listen: false)
           .pieces[0]
-          .canMoveTo(0, c)) {
-        return Location(0, c);
+          .canMoveTo(
+              0,
+              c,
+              Provider.of<GameCoordProvider>(context, listen: false)
+                  .pieceOfTile(c, 0),
+              Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+                  c,
+                  0,
+                  Provider.of<GameCoordProvider>(context, listen: false)
+                      .currentTurn
+                      .name),
+              Provider.of<GameCoordProvider>(context, listen: false)
+                  .currentTurn
+                  .name)) {
+        return Location(c, 0);
       }
     }
-    Provider.of<GameCoordProvider>(context, listen: false)
-        .pieces[0]
-        .movesPosible = Provider.of<GameCoordProvider>(context,
-            listen: false)
-        .pieces[0]
-        .moves(Provider.of<GameCoordProvider>(context, listen: false).pieces);
-    final randon = Random();
-    return Provider.of<GameCoordProvider>(context, listen: false)
-            .pieces[0]
-            .movesPosible[
-        randon.nextInt(Provider.of<GameCoordProvider>(context, listen: false)
-            .pieces[0]
-            .movesPosible
-            .length)];
+    return generarMovAleatorio(
+        Provider.of<GameCoordProvider>(context, listen: false).pieces[0]);
+    // Provider.of<GameCoordProvider>(context, listen: false).pieces[0].movesPosible =
+    //     Provider.of<GameCoordProvider>(context, listen: false).pieces[0].moves(Provider.of<GameCoordProvider>(context, listen: false).pieces);
+    // final randon = Random();
+    // return Provider.of<GameCoordProvider>(context, listen: false).pieces[0].movesPosible[
+    //     randon.nextInt(Provider.of<GameCoordProvider>(context, listen: false).pieces[0].movesPosible.length)];
+  }
+
+  Location generarMovAleatorio(MgPiece piece) {
+    List a = [];
+    for (var i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
+      for (var j in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]) {
+        if (piece.canMoveTo(
+            j,
+            i,
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .pieceOfTile(i, j),
+            Provider.of<GameCoordProvider>(context, listen: false).onPosesion(
+                i,
+                j,
+                Provider.of<GameCoordProvider>(context, listen: false)
+                    .currentTurn
+                    .name),
+            Provider.of<GameCoordProvider>(context, listen: false)
+                .currentTurn
+                .name)) {
+          a.add([i, j]);
+        }
+      }
+    }
+    final random = Random();
+    List mov = a[random.nextInt(a.length)];
+    return Location(mov[0], mov[1]);
   }
 
   onAcept(MgPiece piece, columna, fila) {

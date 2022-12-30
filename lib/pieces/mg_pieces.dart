@@ -49,8 +49,9 @@ abstract class MgPiece {
 
   // bool canMoveTo(int x, int y, List<MgPiece> others) =>
   //     moves(others).contains(Location(x, y));
-  bool canMoveTo(int x, int y) => movesPosible.contains(Location(x, y));
-  // bool canMoveTo(int x, int y, MgPiece? piece, bool posesion);
+  // bool canMoveTo(int x, int y, MgPiece? piece, bool posesion) =>
+  //     movesPosible.contains(Location(x, y));
+  bool canMoveTo(int y, int x, MgPiece? piece, bool posesion, String? turno);
   @override
   String toString() => "$name($x, $y)";
 }

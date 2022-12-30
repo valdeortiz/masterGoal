@@ -30,13 +30,19 @@ class BallPiece extends MgPiece {
     // la pelota no puede quedar en el area del jugador que posee la pelota
     // la pelota no se puede dejar a un jugador contrario
     return <Location>[
-      ..._generateMoves(x - 1, y - 1, others),
-      ..._generateMoves(x - 1, y, others),
-      ..._generateMoves(x - 1, y + 1, others),
-      Location(x - 2, y),
-      Location(x + 2, y),
-      Location(x, y + 2),
-      Location(x, y - 2),
+      // ..._generateMoves(x - 1, y - 1, others),
+      // ..._generateMoves(x - 1, y, others),
+      // ..._generateMoves(x - 1, y + 1, others),
+      ..._generateMoves(x, y, others, true),
+      ..._generateMoves(x - 4, y, others, false),
+      ..._generateMovesOnDiagonal(true, true, others),
+      ..._generateMovesOnDiagonal(true, false, others),
+      ..._generateMovesOnDiagonal(false, true, others),
+      ..._generateMovesOnDiagonal(false, false, others),
+      // Location(x - 2, y),
+      // Location(x + 2, y),
+      // Location(x, y + 2),
+      // Location(x, y - 2),
     ].toList();
   }
 
@@ -51,20 +57,20 @@ class BallPiece extends MgPiece {
     }
   }
 
-  List<Location> _generateMoves(
-    int x,
-    int y,
+  List<Location> _generateMovesOnDiagonal(
+    bool isUp,
+    bool isRight,
     List<MgPiece> pieces,
   ) {
     bool obstructed = false;
 
-    final a = List<Location?>.generate(3, (i) {
+    final a = List<Location?>.generate(8, (i) {
       if (obstructed) return null;
 
-      // int dx = (isRight ? 1 : -1) * i;
-      // int dy = (isUp ? 1 : -1) * i;
+      int dx = (isRight ? 1 : -1) * i;
+      int dy = (isUp ? 1 : -1) * i;
 
-      final destination = Location(x + i, y);
+      final destination = Location(x + dx, y + dy);
 
       final pieceOnLocation =
           pieces.any((piece) => piece.location == destination);
@@ -76,7 +82,38 @@ class BallPiece extends MgPiece {
 
       return destination;
     }).whereType<Location>().where((location) => location.isValid).toList();
-    print(a);
+    // print(a);
+    return a;
+  }
+
+  List<Location> _generateMoves(
+    int x,
+    int y,
+    List<MgPiece> pieces,
+    bool isVertical,
+  ) {
+    bool obstructed = false;
+
+    final a = List<Location?>.generate(8, (i) {
+      if (obstructed) return null;
+
+      // int dx = (isRight ? 1 : -1) * i;
+      // int dy = (isUp ? 1 : -1) * i;
+
+      final destination =
+          Location(isVertical ? x : x + i, isVertical ? y + i : y);
+
+      final pieceOnLocation =
+          pieces.any((piece) => piece.location == destination);
+
+      if (pieceOnLocation && location != destination) {
+        obstructed = true;
+        return null;
+      }
+
+      return destination;
+    }).whereType<Location>().where((location) => location.isValid).toList();
+    // print(a);
     return a;
   }
 
@@ -84,12 +121,20 @@ class BallPiece extends MgPiece {
   String get name => 'ball';
 
   @override
-  bool canMoveTo(int x, int y) {
-    // if (piece != null) return false;
-    // if (posesion == false) return false;
-    if (((abs(x - this.x) <= 4) && (this.y == y)) ||
-        ((abs(y - this.y) <= 4) && (this.x == x)) ||
-        ((abs(y - this.y) == abs(x - this.x)) && (abs(x - this.x) <= 4))) {
+  bool canMoveTo(int y, int x, MgPiece? piece, bool posesion, String? turno) {
+    if (piece != null) return false;
+    if (posesion == false) return false;
+    if (turno == "player1") {
+      if (y == 0 && (x == 0 || x == 12)) return false;
+      if ((x >= 1 && x <= 11) && (y <= 4)) return false;
+    } else {
+      if (y == 13 && (x == 0 || x == 12)) return false;
+      if ((x >= 1 && x <= 11) && (y >= 10)) return false;
+    }
+    if (x < 0 || y < 0 || x > 12 || y > 13) return false;
+    if (((abs(x - this.y) <= 4) && (this.x == y)) ||
+        ((abs(y - this.x) <= 4) && (this.y == x)) ||
+        ((abs(y - this.x) == abs(x - this.y)) && (abs(x - this.y) <= 4))) {
       return true;
     }
     return false;
